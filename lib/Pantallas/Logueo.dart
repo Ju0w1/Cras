@@ -3,7 +3,6 @@ import 'package:cras/Modelo/Inicio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:splashscreen/splashscreen.dart';
-
 import 'Mapa.dart';
 
 int _darkBlue = 0xFF022859;
@@ -31,7 +30,7 @@ class _Logueo extends State<Logueo>{
             Container(
               alignment: Alignment.topCenter,
               color: Colors.transparent,
-              child: Image.asset("assets/images/Logo 800px.png",scale:7,),
+              child: Image.asset("assets/images/Logo.png",scale:7,),
             ),
             SizedBox(
               height: 15,
@@ -110,7 +109,7 @@ class _Logueo extends State<Logueo>{
                       ),
                     ),
                     onTap: () async {
-                      final response = await http.get("$_url&correo=${correocontroller.text}&clave=${clavecontroller.text}");
+                      final response = await http.get("${_url}&correo=${correocontroller.text}&clave=${clavecontroller.text}");
                       if(response.statusCode == 200){
                         inicio = Inicio.fromJson(json.decode(response.body));
                         Navigator.of(context).pushAndRemoveUntil(
