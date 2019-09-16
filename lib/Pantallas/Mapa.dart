@@ -1,10 +1,16 @@
+import 'package:cras/Modelo/add_ubicacion.dart';
+import 'package:cras/Modelo/inactivos.dart';
+import 'package:cras/Modelo/rec_real.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'Modelo/ubicacion.dart';
+import 'package:cras/Modelo/ubicacion.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
+int _darkBlue = 0xFF022859;
 double lat;
 double long;
 Position position;
@@ -13,21 +19,37 @@ double longitude;
 String inactivo;
 String path = 'assets/images/150x150.png';
 
-class Mapa extends StatelessWidget {
+Inactivos inactivos;
+Dispensador _dispensador;
+AddUbicacion ubicacion;
+RecReal recReal;
+
+const _urlDispensadores = "http://cras-dev.com/Interfaz/interfaz.php?&tipo=ubicacion";
+const _url_add_ubicacion = "http://cras-dev.com/Interfaz/interfaz.php?&tipo=addubicacion";
+const _urlObtenerInactivos = "http://cras-dev.com/Interfaz/interfaz.php?&tipo=activo";
+const _urlRecReal ="http://cras-dev.com/Interfaz/interfaz.php?&tipo=recrel";
+
+class Mapa extends StatefulWidget{
+  var nombre;
+  var correo;
+  Mapa({Key key, @required this.nombre, this.correo}) : super (key : key);
+  @override
+  _MapaState createState() => _MapaState();
+}
+
+class _MapaState extends State<Mapa> {
 
   GoogleMapController mapController;
   List <Marker> _Marcadores = [];
   
 Future _getMarkers()async{
   var response = await http.get(_urlDispensadores);
-  //var responsev2 = await http.get(_urlRecReal);
   _dispensador = Dispensador.fromJson(json.decode(response.body));
-  //recReal = RecReal.fromJson(json.decode(responsev2.body));
 
   for(var i=0;i<_dispensador.dispensadores.length;i++){
     _Marcadores.add(Marker(
       icon: BitmapDescriptor.fromAsset(path),
-      infoWindow: InfoWindow(title: 'Dispensador'+' '+_dispensador.dispensadores[i].lugar,snippet: '\$8500',onTap: (){Navigator.push(context,FadeRoute(page: new HomeDispensadores(nombreDisp: _dispensador.dispensadores[i].lugar,nroSerie: _dispensador.dispensadores[i].nroSerie, nombreUsuario: widget.nombre,correoUsuario: widget.correo,)),);}),
+      infoWindow: InfoWindow(title: 'Dispensador'+' '+_dispensador.dispensadores[i].lugar,snippet: '\$8500',onTap: (){/*Navigator.push(context,FadeRoute(page: new HomeDispensadores(nombreDisp: _dispensador.dispensadores[i].lugar,nroSerie: _dispensador.dispensadores[i].nroSerie, nombreUsuario: widget.nombre,correoUsuario: widget.correo,)),);*/}),
       markerId: MarkerId(i.toString()),
       draggable: true,
       onTap: (){
@@ -52,12 +74,6 @@ Future ubicarDispensador()async{
     }
   }
 }
-/*navigator(){
-  Navigator.push(
-    context,
-      MaterialPageRoute(builder: (context) => Loader())
-  );
-}*/
 
 Future _getDispIn()async{
 var response = await http.get(_urlObtenerInactivos);
@@ -77,43 +93,20 @@ var name;
 var email;
 @override
 void initState() {
-  //_getDispIn();
   super.initState();
   email= widget.nombre;
-  //_getDispIn();
   PermissionHandler().checkPermissionStatus(PermissionGroup.locationWhenInUse).then(_updateStatus);
-  //super.initState();
- // _getDispIn();
 }
 
-String valor ; /*inactivos.dispensadores[0].serie*/
+String valor ;
 List<String> dispInactivos = [];
 
 TextEditingController lugarcontroller = TextEditingController();
-//var tiempo_=1;
   @override
   Widget build(BuildContext context) {
-    /*Timer.periodic(Duration(seconds: tiempo_), (timer) async{
-      dispInactivos.clear();
-      _getDispIn();
-      for(int i = 0;i<inactivos.dispensadores.length;i++){
-        dispInactivos.add(inactivos.dispensadores[i].serie);
-      }
-      tiempo_=5;
-    });*/
     return new Scaffold(
       appBar: AppBar(
         actions: <Widget>[
-          /*IconButton(
-            icon: Icon(Icons.replay,color: Colors.white,),
-            onPressed: (){
-              Navigator.push(
-                context,
-                FadeRoute(
-                  page: new MapSample(nombre: widget.nombre,correo: widget.correo,)),
-              );
-            },
-          )*/
         ],
         centerTitle: true,
         title: Text("Mapa Dispensadores",),
@@ -132,43 +125,43 @@ TextEditingController lugarcontroller = TextEditingController();
             ),
           new ListTile(
               title: Text("Mapa Dispensadores"),
-              onTap: (){
+              onTap: (){/*
                 Navigator.push(
                   context,
                   FadeRoute(
                     page: new MapSample(nombre: widget.nombre,correo: widget.correo,)),
                 );
-              },
+              */},
             ),
             new ListTile(
               title: Text("Resumen"),
-              onTap: (){
+              onTap: (){/*
                 Navigator.push(
                   context,
                   FadeRoute(
                     page: new HomeDashboard(nombre: widget.nombre,correo: widget.correo,)),
                 );
-              },
+              */},
             ),
             new ListTile(
               title: Text("Agregar Dispensador"),
-              onTap: (){
+              onTap: (){/*
                 Navigator.push(
                   context,
                   FadeRoute(
                     page: new HomeAgregarPage(nombre: widget.nombre,correo: widget.correo,)),
                 );
-              },
+              */},
             ),
             new ListTile(
               title: Text("Mantenimientos"),
-              onTap: (){
+              onTap: (){/*
                 Navigator.push(
                   context,
                   FadeRoute(
                     page: new MantenimientosSample(nombre: widget.nombre,correo: widget.correo,)),
                 );
-              },
+              */},
             ),
         ],
       ),
@@ -217,10 +210,10 @@ TextEditingController lugarcontroller = TextEditingController();
                                     Container(
                                       padding: EdgeInsets.only(right:10,left: 20),
                                       alignment: Alignment.centerLeft,
-                                      child: FutureBuilder(
+                                      /*child: FutureBuilder(
                                         future: _getDispIn(),
                                         builder: (BuildContext context, AsyncSnapshot snapshot) => dropmenu(inactivos),
-                                      ),
+                                      ),*/
                                     ),
                                     Container(
                                       alignment: Alignment.centerRight,
@@ -253,7 +246,7 @@ TextEditingController lugarcontroller = TextEditingController();
                                     Timer(Duration(seconds: 2), (){
                                       Navigator.of(context).pushAndRemoveUntil(
                                         MaterialPageRoute(
-                                          builder: (BuildContext context) =>new MapSample(nombre: widget.nombre,correo: widget.correo,)
+                                          builder: (BuildContext context) =>new Mapa(nombre: widget.nombre,correo: widget.correo,)
                                         ),
                                         (Route<dynamic> route) => false,
                                       );
@@ -272,3 +265,23 @@ TextEditingController lugarcontroller = TextEditingController();
   ),
 );
 }
+void _updateStatus(PermissionStatus status){
+    if(status != _status){
+      setState(() {
+        _status =  status;
+      });
+    }
+  }
+
+  void _askPermission(){
+    PermissionHandler().requestPermissions(
+      [PermissionGroup.locationWhenInUse]).then(_onStatusRequested);
+  }
+
+  void _onStatusRequested(Map<PermissionGroup, PermissionStatus> statusses){
+    final status = statusses[PermissionGroup.locationWhenInUse];
+    _updateStatus(status);
+  }
+}
+
+
