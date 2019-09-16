@@ -113,16 +113,6 @@ class _Logueo extends State<Logueo>{
                       final response = await http.get("$_url&correo=${correocontroller.text}&clave=${clavecontroller.text}");
                       if(response.statusCode == 200){
                         inicio = Inicio.fromJson(json.decode(response.body));
-                        new SplashScreen(
-                          seconds: 1,
-                          navigateAfterSeconds: new Segunda(),
-                          title: new Text('Welcome In SplashScreen'),
-                          image: new Image.asset('screenshot.png'),
-                          backgroundColor: Colors.white,
-                          styleTextUnderTheLoader: new TextStyle(),
-                          photoSize: 100.0,
-                          loaderColor: Colors.red
-                        );
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
                             builder: (BuildContext context) => Segunda()),
