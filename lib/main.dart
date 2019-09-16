@@ -1,5 +1,6 @@
+import 'package:cras/Pantallas/Logueo.dart';
 import 'package:flutter/material.dart';
-import 'Pantallas/Logueo.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
