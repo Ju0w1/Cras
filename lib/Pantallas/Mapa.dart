@@ -1,5 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'Modelo/ubicacion.dart';
+import 'dart:async';
+import 'dart:convert';
+
+double lat;
+double long;
+Position position;
+double latitude;
+double longitude;
+String inactivo;
+String path = 'assets/images/150x150.png';
 
 class Mapa extends StatelessWidget {
 
