@@ -1,3 +1,4 @@
+//=====================IMPORTS=====================\\
 import 'dart:convert';
 import 'package:cras/Modelo/Inicio.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,6 @@ import 'package:splashscreen/splashscreen.dart';
 import 'Mapa.dart';
 
 int _darkBlue = 0xFF022859;
-
 Inicio inicio;
 final _url = "http://cras-dev.com/Interfaz/interfaz.php?tipo=sesion";
 
@@ -15,6 +15,7 @@ class Logueo extends StatefulWidget{
   _Logueo createState() => _Logueo();
 }
 
+//=====================PANTALLA=====================\\
 class _Logueo extends State<Logueo>{
   final TextEditingController correocontroller = TextEditingController();
   final TextEditingController clavecontroller = TextEditingController();
