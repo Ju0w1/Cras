@@ -1,10 +1,8 @@
 import 'dart:convert';
-
 import 'package:cras/Modelo/Inicio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:splashscreen/splashscreen.dart';
-import 'package:cras/Modelo/Inicio.dart';
 
 import 'Mapa.dart';
 
@@ -112,7 +110,7 @@ class _Logueo extends State<Logueo>{
                       ),
                     ),
                     onTap: () async {
-                      final response = await http.get("${_url}&correo=${correocontroller.text}&clave=${clavecontroller.text}");
+                      final response = await http.get("$_url&correo=${correocontroller.text}&clave=${clavecontroller.text}");
                       if(response.statusCode == 200){
                         inicio = Inicio.fromJson(json.decode(response.body));
                         new SplashScreen(
