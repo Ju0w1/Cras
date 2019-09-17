@@ -1,6 +1,7 @@
 import 'package:cras/Modelo/add_ubicacion.dart';
 import 'package:cras/Modelo/inactivos.dart';
 import 'package:cras/Modelo/rec_real.dart';
+import 'package:cras/Modelo/temp_real.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -23,11 +24,13 @@ Inactivos inactivos;
 Dispensador _dispensador;
 AddUbicacion ubicacion;
 RecReal recReal;
+TempReal tempReal;
 
 const _urlDispensadores = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=ubicacion";
 const _url_add_ubicacion = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=addubicacion";
 const _urlObtenerInactivos = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=activo";
-//const _urlRecReal ="http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=recrel";
+const _urlRecReal ="http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=recrel";
+const _urlTmpReal ="http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=temp_rel";
 
 class Mapa extends StatefulWidget{
   var nombre;
@@ -43,13 +46,24 @@ class _MapaState extends State<Mapa> {
   List <Marker> _Marcadores = [];
   
 Future _getMarkers()async{
-  var response = await http.get(_urlDispensadores);
+  final response = await http.get(_urlDispensadores);
   _dispensador = Dispensador.fromJson(json.decode(response.body));
-
   for(var i=0;i<_dispensador.dispensadores.length;i++){
+    final response2 = await http.get("$_urlRecReal&serie=${_dispensador.dispensadores[i].nroSerie}");
+    recReal = RecReal.fromJson(json.decode(response2.body));
+    final response3 = await http.get("$_urlTmpReal&serie=${_dispensador.dispensadores[i].nroSerie}");
+    tempReal = TempReal.fromJson(json.decode(response3.body));
     _Marcadores.add(Marker(
       icon: BitmapDescriptor.fromAsset(path),
-      infoWindow: InfoWindow(title: 'Dispensador'+' '+_dispensador.dispensadores[i].lugar,snippet: '\$8500',onTap: (){/*Navigator.push(context,FadeRoute(page: new HomeDispensadores(nombreDisp: _dispensador.dispensadores[i].lugar,nroSerie: _dispensador.dispensadores[i].nroSerie, nombreUsuario: widget.nombre,correoUsuario: widget.correo,)),);*/}),
+      infoWindow: InfoWindow(
+        title: 'Dispensador'+' '+_dispensador.dispensadores[i].lugar,
+        snippet:'\$'+recReal.total[0].recaudado+' | '+tempReal.temperatura[0].prom+'°C',
+        onTap: (){
+          /*Navigator.push(
+            context,
+            FadeRoute(page: new HomeDispensadores(nombreDisp: _dispensador.dispensadores[i].lugar,nroSerie: _dispensador.dispensadores[i].nroSerie, nombreUsuario: widget.nombre,correoUsuario: widget.correo,)),);*/
+        }
+      ),
       markerId: MarkerId(i.toString()),
       draggable: true,
       onTap: (){

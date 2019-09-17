@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 int _darkBlue = 0xFF022859;
 int _midBlue = 0xFF2E78A6;
 int _lightBlue = 0xFF6AAED9;
-class Registro extends StatefulWidget{
 
+class Registro extends StatefulWidget{
   @override
   _Registro createState() => _Registro(); 
 }
@@ -15,10 +15,10 @@ class Registro extends StatefulWidget{
 
 class _Registro extends State<Registro>{
   //=====================CONTROLLERS=====================\\
-  TextEditingController nombre = TextEditingController();
-  TextEditingController apellido = TextEditingController();
-  TextEditingController correo = TextEditingController();
-  TextEditingController pwd = TextEditingController();
+  final TextEditingController nombre = TextEditingController();
+  final TextEditingController apellido = TextEditingController();
+  final TextEditingController correo = TextEditingController();
+  final TextEditingController pwd = TextEditingController();
 
   @override
   Widget build(BuildContext context){

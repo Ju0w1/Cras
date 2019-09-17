@@ -157,12 +157,12 @@ class _Logueo extends State<Login>{
                       SizedBox(width: 5,),
                       InkWell(
                         onTap: (){
-                           Navigator.push(
-                             context,
-                             MaterialPageRoute(
-                               builder: (context) => Registro(),
-                             )
-                             );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Registro(),
+                            )
+                          );
                         },
                         child: Text(
                           'Registrarse',
