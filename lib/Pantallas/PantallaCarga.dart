@@ -28,13 +28,6 @@ class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin{
   void initState(){
     super.initState();
     pantalla = widget.pantallas;
-    /*Future.delayed(Duration(seconds: 5),(){
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (BuildContext context) => pantalla ),
-          (Route<dynamic>route) =>false,
-      );
-    });*/
     Timer(Duration(seconds: 5),() =>Navigator.push(
       context,
       MaterialPageRoute(builder: (BuildContext context) => pantalla)

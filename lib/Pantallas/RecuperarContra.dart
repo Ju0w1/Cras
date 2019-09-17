@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:cras/Modelo/Inicio.dart';
 import 'package:cras/Modelo/rec_pwd.dart';
 import 'package:cras/Pantallas/Logueo.dart';
 import 'package:flutter/material.dart';

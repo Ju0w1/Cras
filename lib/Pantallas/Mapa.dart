@@ -1,3 +1,4 @@
+//=====================IMPORTS=====================\\
 import 'package:cras/Modelo/add_ubicacion.dart';
 import 'package:cras/Modelo/inactivos.dart';
 import 'package:cras/Modelo/rec_real.dart';
@@ -11,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
+//=====================DECLARACIONES=====================\\
 int _darkBlue = 0xFF022859;
 double lat;
 double long;
@@ -19,7 +21,6 @@ double latitude;
 double longitude;
 String inactivo;
 String path = 'assets/images/150x150.png';
-//:)\\
 Inactivos inactivos;
 Dispensador _dispensador;
 AddUbicacion ubicacion;
@@ -39,12 +40,12 @@ class Mapa extends StatefulWidget{
   @override
   _MapaState createState() => _MapaState();
 }
-
+//=====================CONTROLLERS=====================\\
 class _MapaState extends State<Mapa> {
-
+//=====================DECLARACIÓN MAPA=====================\\
   GoogleMapController mapController;
   List <Marker> _Marcadores = [];
-  
+//=====================MARCADORES=====================\\
 Future _getMarkers()async{
   final response = await http.get(_urlDispensadores);
   _dispensador = Dispensador.fromJson(json.decode(response.body));
@@ -72,7 +73,7 @@ Future _getMarkers()async{
     ));
   }
 }
-
+//=====================FUTURE UBICACIÓN=====================\\
 Future ubicarDispensador()async{
   position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   latitude = position.latitude;
@@ -88,7 +89,7 @@ Future ubicarDispensador()async{
     }
   }
 }
-
+//=====================FUTURE OBTENER INACTIVOS=====================\\
 Future _getDispIn()async{
 var response = await http.get(_urlObtenerInactivos);
   if(response.statusCode == 200){
@@ -100,22 +101,23 @@ var response = await http.get(_urlObtenerInactivos);
       }
   }
 }
-  PermissionStatus _status;
-  var geolocator = Geolocator();
-  var locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
+PermissionStatus _status;
+var geolocator = Geolocator();
+var locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
 var name;
 var email;
 @override
 void initState() {
   super.initState();
   email= widget.nombre;
+  //=====================SOLICITUD DE PERMISOS PARA LOCALIZACIÓN=====================\\
   PermissionHandler().checkPermissionStatus(PermissionGroup.locationWhenInUse).then(_updateStatus);
 }
 
 String valor ;
 List<String> dispInactivos = [];
 
-TextEditingController lugarcontroller = TextEditingController();
+final TextEditingController lugarcontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -279,6 +281,7 @@ TextEditingController lugarcontroller = TextEditingController();
   ),
 );
 }
+//=====================PERMISOS LOCALIZACIÓN=====================\\
 void _updateStatus(PermissionStatus status){
     if(status != _status){
       setState(() {

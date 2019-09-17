@@ -1,5 +1,6 @@
 //=====================IMPORTS=====================\\
 import 'package:cras/Pantallas/PantallaCarga.dart';
+import 'package:cras/Pantallas/RecuperarContra.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
@@ -8,10 +9,17 @@ import 'dart:convert';
 import 'Mapa.dart';
 
 int _darkBlue = 0xFF022859;
-int _midBlue = 0xFF2E78A6;
-int _lightBlue = 0xFF6AAED9;
 Reg registro;
 final _url = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=registro";
+
+final GlobalKey<ScaffoldState> _scaffoldKeyPasswd = new GlobalKey<ScaffoldState>();
+_showSnackBar(){
+    final snackBar = new SnackBar(
+      content: Text(mensaje_stack),
+      duration: Duration(seconds: 3),
+    );
+    _scaffoldKeyPasswd.currentState.showSnackBar(snackBar);
+}
 
 class Registro extends StatefulWidget{
   @override
@@ -29,6 +37,7 @@ class _Registro extends State<Registro>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
+      key: _scaffoldKeyPasswd,
       backgroundColor: Colors.white,
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -127,68 +136,48 @@ class _Registro extends State<Registro>{
                         ),
                         SizedBox(height: 30,),  
 //Boton                        
-                        Container(
-                          height: 40,
-                          child: Material(
-                            borderRadius: BorderRadius.circular(20),
-                            shadowColor: Colors.blueAccent,
-                            elevation: 7.0,
-                            child: GestureDetector(
-                              child: Center(
-                                child: Text(
-                                  "Registrarse".toUpperCase(),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
+                        InkWell(
+                          child: Container(
+                            height: 40,
+                            decoration: new BoxDecoration(
+                              color: Color(_darkBlue),
+                              borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Registrarse".toUpperCase(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
                                 ),
                               ),
-                              onTap: () async{
-                                var response = await http.get("$_url&nombre=${nombre.text}&apellido=${apellido.text}&correo=${correo.text}&clave=${pwd.text}&clave2=${pwd2.text}");
-                                if(response.statusCode == 200){
-                                  registro = Reg.fromJson(json.decode(response.body));
-                                  if(registro.realizado == "1"){
-                                    _navigator();
-                                  }else{
-                                    showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    child: new CupertinoAlertDialog(
-                                      content: new Text(
-                                        registro.mensaje,
-                                        style: new TextStyle(fontSize: 16.0),
-                                      ),
-                                      actions: <Widget>[
-                                        new FlatButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: new Text("OK"))
-                                      ],
-                                    ));  
-                                  }
-                                }else{
-                                  showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  child: new CupertinoAlertDialog(
-                                    content: new Text(
-                                      "Error en el servidor",
-                                      style: new TextStyle(fontSize: 16.0),
-                                    ),
-                                    actions: <Widget>[
-                                      new FlatButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: new Text("OK"))
-                                    ],
-                                  ));
-                                }
-                              },
                             ),
                           ),
+                          onTap: ()async{
+                            var response = await http.get("$_url&nombre=${nombre.text}&apellido=${apellido.text}&correo=${correo.text}&clave=${pwd.text}&clave2=${pwd2.text}");
+                            if(response.statusCode == 200){
+                              if(pwd.text == pwd2.text){
+                                registro = Reg.fromJson(json.decode(response.body));
+                                if(registro.realizado == "1"){
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) => Loader (pantallas: Mapa(nombre: nombre.text+" "+apellido.text,correo: correo.text,))),
+                                      (Route<dynamic> route) => false
+                                  );
+                                }else{
+                                  mensaje_stack = registro.mensaje;
+                                  _showSnackBar();
+                                }
+                              }else{
+                                mensaje_stack = "No coinciden las contraseñas";
+                                _showSnackBar();
+                              }
+                            }else{
+                              mensaje_stack = "Fallo de Conexión";
+                              _showSnackBar();
+                            }
+                          },
                         )
                       ],
                     ),
@@ -201,11 +190,5 @@ class _Registro extends State<Registro>{
       ),
     );
   }
-  _navigator(){
-  Navigator.of(context).pushAndRemoveUntil(
-    new MaterialPageRoute(
-      builder: (BuildContext context) => new Loader(pantallas: Mapa(nombre: nombre.text,correo: correo.text,),)),
-      (Route<dynamic> route) => false);
-}
 }
 

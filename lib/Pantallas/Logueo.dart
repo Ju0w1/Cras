@@ -10,10 +10,19 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'Registro.dart';
 import 'PantallaCarga.dart';
-
+//=====================DECLARACIONES=====================\\
 int _darkBlue = 0xFF022859;
 Inicio inicio;
 final _url = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=sesion";
+
+final GlobalKey<ScaffoldState> _scaffoldKeyPasswd = new GlobalKey<ScaffoldState>();
+_showSnackBar(){
+    final snackBar = new SnackBar(
+      content: Text(mensaje_stack),
+      duration: Duration(seconds: 3),
+    );
+    _scaffoldKeyPasswd.currentState.showSnackBar(snackBar);
+}
 
 class Login extends StatefulWidget{
   @override
@@ -27,6 +36,7 @@ class _Logueo extends State<Login>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
+      key: _scaffoldKeyPasswd,
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -46,6 +56,7 @@ class _Logueo extends State<Login>{
               padding: EdgeInsets.all(25),
               child: Column(
                 children: <Widget>[
+//Email
                   TextField(
                     controller: correocontroller,
                     decoration: InputDecoration(
@@ -62,6 +73,7 @@ class _Logueo extends State<Login>{
                   SizedBox(
                     height: 15,
                   ),
+//Contraseña
                   TextField(
                     controller: clavecontroller,
                     obscureText: true,
@@ -119,25 +131,23 @@ class _Logueo extends State<Login>{
                       ),
                     ),
                     onTap: () async {
+//=====================COMUNICACIÓN WEB-SERVICE=====================\\
                       final response = await http.get("$_url&correo=${correocontroller.text}&clave=${clavecontroller.text}");
                       if(response.statusCode == 200){
                         inicio = Inicio.fromJson(json.decode(response.body));
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => Loader (pantallas: Mapa(nombre: inicio.logueo[0].nombre+" "+inicio.logueo[0].apellido,correo: inicio.logueo[0].correo,))),
-                            (Route<dynamic> route) => false
-                        );
+                        if(inicio.realizado=="1"){
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => Loader (pantallas: Mapa(nombre: inicio.logueo[0].nombre+" "+inicio.logueo[0].apellido,correo: inicio.logueo[0].correo,))),
+                              (Route<dynamic> route) => false
+                          );
+                        }else{
+                          mensaje_stack = inicio.mensaje;
+                          _showSnackBar();
+                        }
                       }else{
-                        new SplashScreen(
-                          seconds: 1,
-                          navigateAfterSeconds: new Mapa(nombre: correocontroller.text,correo: correocontroller.text,),
-                          title: new Text('Welcome In SplashScreen'),
-                          image: new Image.asset('screenshot.png'),
-                          backgroundColor: Colors.white,
-                          styleTextUnderTheLoader: new TextStyle(),
-                          photoSize: 100.0,
-                          loaderColor: Colors.red
-                        );
+                        mensaje_stack = "Fallo de Conexión";
+                        _showSnackBar();
                       }
                     },
                   ),
