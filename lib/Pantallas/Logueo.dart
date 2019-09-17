@@ -141,7 +141,7 @@ class _Logueo extends State<Login>{
                       }
                     },
                   ),
-                  SizedBox(
+                  SizedBox( 
                     height: 30,
                   ),
                   Row( 
