@@ -18,7 +18,7 @@ double latitude;
 double longitude;
 String inactivo;
 String path = 'assets/images/150x150.png';
-
+//:)\\
 Inactivos inactivos;
 Dispensador _dispensador;
 AddUbicacion ubicacion;
