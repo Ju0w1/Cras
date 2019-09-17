@@ -8,7 +8,7 @@ import 'Mapa.dart';
 
 int _darkBlue = 0xFF022859;
 Inicio inicio;
-final _url = "http://cras-dev.com/Interfaz/interfaz.php?tipo=sesion";
+final _url = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=sesion";
 
 class Logueo extends StatefulWidget{
   @override
@@ -115,7 +115,7 @@ class _Logueo extends State<Logueo>{
                         inicio = Inicio.fromJson(json.decode(response.body));
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
-                            builder: (BuildContext context) => Mapa()),
+                            builder: (BuildContext context) => Mapa(nombre: correocontroller.text,correo: correocontroller.text,)),
                             (Route<dynamic> route) => false
                         );
                       }else{

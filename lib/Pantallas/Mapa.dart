@@ -24,10 +24,10 @@ Dispensador _dispensador;
 AddUbicacion ubicacion;
 RecReal recReal;
 
-const _urlDispensadores = "http://cras-dev.com/Interfaz/interfaz.php?&tipo=ubicacion";
-const _url_add_ubicacion = "http://cras-dev.com/Interfaz/interfaz.php?&tipo=addubicacion";
-const _urlObtenerInactivos = "http://cras-dev.com/Interfaz/interfaz.php?&tipo=activo";
-const _urlRecReal ="http://cras-dev.com/Interfaz/interfaz.php?&tipo=recrel";
+const _urlDispensadores = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=ubicacion";
+const _url_add_ubicacion = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=addubicacion";
+const _urlObtenerInactivos = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=activo";
+const _urlRecReal ="http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=recrel";
 
 class Mapa extends StatefulWidget{
   var nombre;
