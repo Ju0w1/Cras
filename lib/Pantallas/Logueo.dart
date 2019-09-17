@@ -1,6 +1,7 @@
 //=====================IMPORTS=====================\\
 import 'dart:convert';
 import 'package:cras/Modelo/Inicio.dart';
+import 'package:cras/Pantallas/RecuperarContra.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:splashscreen/splashscreen.dart';
@@ -11,13 +12,13 @@ int _darkBlue = 0xFF022859;
 Inicio inicio;
 final _url = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=sesion";
 
-class Logueo extends StatefulWidget{
+class Login extends StatefulWidget{
   @override
   _Logueo createState() => _Logueo();
 }
 
 //=====================PANTALLA=====================\\
-class _Logueo extends State<Logueo>{
+class _Logueo extends State<Login>{
   final TextEditingController correocontroller = TextEditingController();
   final TextEditingController clavecontroller = TextEditingController();
   @override
@@ -79,6 +80,10 @@ class _Logueo extends State<Logueo>{
                     alignment: Alignment.topRight,
                     child: InkWell(
                       onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => new RecuperarContra()),
+                        );
                       },
                       child: Text(
                         'No recuerda su contraseña?',
