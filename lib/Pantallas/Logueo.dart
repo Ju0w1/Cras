@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:splashscreen/splashscreen.dart';
 import 'Mapa.dart';
+import 'PantallaCarga.dart';
 
 int _darkBlue = 0xFF022859;
 Inicio inicio;
@@ -110,18 +111,18 @@ class _Logueo extends State<Logueo>{
                       ),
                     ),
                     onTap: () async {
-                      final response = await http.get("${_url}&correo=${correocontroller.text}&clave=${clavecontroller.text}");
+                      final response = await http.get("$_url&correo=${correocontroller.text}&clave=${clavecontroller.text}");
                       if(response.statusCode == 200){
                         inicio = Inicio.fromJson(json.decode(response.body));
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
-                            builder: (BuildContext context) => Mapa(nombre: correocontroller.text,correo: correocontroller.text,)),
+                            builder: (BuildContext context) => Loader (pantallas: Mapa(nombre: inicio.logueo[0].nombre+" "+inicio.logueo[0].apellido,correo: inicio.logueo[0].correo,))),
                             (Route<dynamic> route) => false
                         );
                       }else{
                         new SplashScreen(
                           seconds: 1,
-                          navigateAfterSeconds: new Mapa(),
+                          navigateAfterSeconds: new Mapa(nombre: correocontroller.text,correo: correocontroller.text,),
                           title: new Text('Welcome In SplashScreen'),
                           image: new Image.asset('screenshot.png'),
                           backgroundColor: Colors.white,

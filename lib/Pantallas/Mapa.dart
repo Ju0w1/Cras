@@ -27,7 +27,7 @@ RecReal recReal;
 const _urlDispensadores = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=ubicacion";
 const _url_add_ubicacion = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=addubicacion";
 const _urlObtenerInactivos = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=activo";
-const _urlRecReal ="http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=recrel";
+//const _urlRecReal ="http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=recrel";
 
 class Mapa extends StatefulWidget{
   var nombre;
@@ -63,7 +63,7 @@ Future ubicarDispensador()async{
   position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   latitude = position.latitude;
   longitude = position.longitude;
-  var respose = await http.get("${_url_add_ubicacion}&serie=$valor&lat=${latitude.toString()}&long=${longitude.toString()}&lugar=${lugarcontroller.text}");
+  var respose = await http.get("$_url_add_ubicacion&serie=$valor&lat=${latitude.toString()}&long=${longitude.toString()}&lugar=${lugarcontroller.text}");
   if(respose.statusCode == 200){
     ubicacion = AddUbicacion.fromJson(json.decode(respose.body));
     print(respose.statusCode);
