@@ -9,7 +9,7 @@ import 'Mapa.dart';
 int _darkBlue = 0xFF022859;
 
 Inicio inicio;
-final _url = "http://cras-dev.com/Interfaz/interfaz.php?tipo=sesion";
+final _url = "http://cras-dev.com/Interfaz/interfaz.php?authkebq1J2MD=&tipo=sesion";
 
 class Logueo extends StatefulWidget{
   @override
