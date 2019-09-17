@@ -1,10 +1,10 @@
-class Registro {
+class Reg {
   String realizado;
   String mensaje;
 
-  Registro({this.realizado, this.mensaje});
+  Reg({this.realizado, this.mensaje});
 
-  Registro.fromJson(Map<String, dynamic> json) {
+  Reg.fromJson(Map<String, dynamic> json) {
     realizado = json['Realizado'];
     mensaje = json['Mensaje'];
   }
