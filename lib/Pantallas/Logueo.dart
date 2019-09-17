@@ -144,7 +144,7 @@ class _Logueo extends State<Login>{
                   SizedBox(
                     height: 30,
                   ),
-                  Row(
+                  Row( 
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
