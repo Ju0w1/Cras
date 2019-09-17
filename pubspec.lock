@@ -121,22 +121,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.3"
-<<<<<<< HEAD
-  intl:
-    dependency: transitive
-    description:
-      name: intl
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.15.8"
-  location_permissions:
-    dependency: transitive
-    description:
-      name: location_permissions
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.2"
-=======
   image:
     dependency: transitive
     description:
@@ -144,7 +128,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.4"
->>>>>>> f870a4701bc1b4d39334e032c022443535f0b0d3
+  intl:
+    dependency: transitive
+    description:
+      name: intl
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.16.0"
+  location_permissions:
+    dependency: transitive
+    description:
+      name: location_permissions
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
   matcher:
     dependency: transitive
     description:
@@ -173,7 +170,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0+1"
-<<<<<<< HEAD
   permission_handler:
     dependency: "direct main"
     description:
@@ -181,7 +177,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.2.2"
-=======
   petitparser:
     dependency: transitive
     description:
@@ -189,7 +184,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.0"
->>>>>>> f870a4701bc1b4d39334e032c022443535f0b0d3
   quiver:
     dependency: transitive
     description:
@@ -273,9 +267,5 @@ packages:
     source: hosted
     version: "3.5.0"
 sdks:
-<<<<<<< HEAD
-  dart: ">=2.2.2 <3.0.0"
-  flutter: ">=1.5.0 <2.0.0"
-=======
   dart: ">=2.4.0 <3.0.0"
->>>>>>> f870a4701bc1b4d39334e032c022443535f0b0d3
+  flutter: ">=1.5.0 <2.0.0"

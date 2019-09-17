@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:splashscreen/splashscreen.dart';
 import 'Mapa.dart';
+import 'dart:ui';
+import 'package:flutter/cupertino.dart';
+import 'Registro.dart';
 import 'PantallaCarga.dart';
 
 int _darkBlue = 0xFF022859;
@@ -149,6 +152,12 @@ class _Logueo extends State<Logueo>{
                       SizedBox(width: 5,),
                       InkWell(
                         onTap: (){
+                           Navigator.push(
+                             context,
+                             MaterialPageRoute(
+                               builder: (context) => Registro(),
+                             )
+                             );
                         },
                         child: Text(
                           'Registrarse',
