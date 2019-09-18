@@ -12,6 +12,8 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
+import 'Dispensadores.dart';
+
 //=====================DECLARACIONES=====================\\
 int _darkBlue = 0xFF022859;
 double lat;
@@ -60,9 +62,10 @@ Future _getMarkers()async{
         title: 'Dispensador'+' '+_dispensador.dispensadores[i].lugar,
         snippet:'\$'+recReal.total[0].recaudado+' | '+tempReal.temperatura[0].prom+'°C',
         onTap: (){
-          /*Navigator.push(
+          Navigator.push(
             context,
-            FadeRoute(page: new HomeDispensadores(nombreDisp: _dispensador.dispensadores[i].lugar,nroSerie: _dispensador.dispensadores[i].nroSerie, nombreUsuario: widget.nombre,correoUsuario: widget.correo,)),);*/
+            MaterialPageRoute(builder: (context) => PantallaDispensadores(nombreDisp: _dispensador.dispensadores[i].lugar,nroSerie: _dispensador.dispensadores[i].nroSerie, nombreUsuario: widget.nombre,correoUsuario: widget.correo,)),
+          );
         }
       ),
       markerId: MarkerId(i.toString()),
@@ -226,10 +229,10 @@ final TextEditingController lugarcontroller = TextEditingController();
                                     Container(
                                       padding: EdgeInsets.only(right:10,left: 20),
                                       alignment: Alignment.centerLeft,
-                                      /*child: FutureBuilder(
+                                      child: FutureBuilder(
                                         future: _getDispIn(),
                                         builder: (BuildContext context, AsyncSnapshot snapshot) => dropmenu(inactivos),
-                                      ),*/
+                                      ),
                                     ),
                                     Container(
                                       alignment: Alignment.centerRight,
@@ -281,6 +284,25 @@ final TextEditingController lugarcontroller = TextEditingController();
   ),
 );
 }
+//=====================LISTA INACTIVOS=====================\\
+Widget dropmenu(Inactivos dis){
+  return DropdownButton<String>(
+    value: valor,
+    onChanged: (value){
+      setState(() {
+        valor = value;
+      });
+      print(valor);
+    },
+    items: dispInactivos.map<DropdownMenuItem<String>>((String value){
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+    }).toList(),
+  );
+}
+
 //=====================PERMISOS LOCALIZACIÓN=====================\\
 void _updateStatus(PermissionStatus status){
     if(status != _status){
