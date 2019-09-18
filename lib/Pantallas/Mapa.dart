@@ -8,12 +8,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:cras/Modelo/ubicacion.dart';
 import 'package:geolocator/geolocator.dart';
+import 'AgregarDispensador.dart';
 import 'Mantenimiento.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
 import 'Dispensadores.dart';
+import 'Resumen.dart';
 
 //=====================DECLARACIONES=====================\\
 int _darkBlue = 0xFF022859;
@@ -146,33 +148,38 @@ final TextEditingController lugarcontroller = TextEditingController();
             ),
           new ListTile(
               title: Text("Mapa Dispensadores"),
-              onTap: (){/*
+              onTap: (){
+                Navigator.of(context).pop();
                 Navigator.push(
                   context,
-                  FadeRoute(
-                    page: new MapSample(nombre: widget.nombre,correo: widget.correo,)),
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Mapa(nombre: widget.nombre,correo: widget.correo,)
+                  ),
                 );
-              */},
+              },
             ),
             new ListTile(
               title: Text("Resumen"),
-              onTap: (){/*
+              onTap: (){
                 Navigator.push(
                   context,
-                  FadeRoute(
-                    page: new HomeDashboard(nombre: widget.nombre,correo: widget.correo,)),
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Resumen(nombre: widget.nombre,correo: widget.correo,)
+                  ),
                 );
-              */},
+              },
             ),
             new ListTile(
               title: Text("Agregar Dispensador"),
-              onTap: (){/*
-                Navigator.push(
+              onTap: (){
+                Navigator.of(context).pop();
+                  Navigator.push(
                   context,
-                  FadeRoute(
-                    page: new HomeAgregarPage(nombre: widget.nombre,correo: widget.correo,)),
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => AgregarDispensador(nombre: widget.nombre,correo: widget.correo,)
+                  ),
                 );
-              */},
+              },
             ),
             new ListTile(
               title: Text("Mantenimientos"),

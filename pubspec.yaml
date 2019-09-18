@@ -22,6 +22,7 @@ dependencies:
   http:
   splashscreen:
   geolocator: ^4.0.3
+  charts_flutter:
   google_maps_flutter:
   permission_handler:
   flutter_localizations:

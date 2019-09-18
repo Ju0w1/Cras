@@ -4,7 +4,6 @@ import 'package:cras/Modelo/Inicio.dart';
 import 'package:cras/Pantallas/RecuperarContra.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:splashscreen/splashscreen.dart';
 import 'Mapa.dart';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';

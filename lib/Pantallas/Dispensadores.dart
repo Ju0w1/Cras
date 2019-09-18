@@ -1,12 +1,14 @@
 import 'dart:convert';
-
 import 'package:cras/Modelo/Estado.dart';
 import 'package:cras/Modelo/rec_real.dart';
 import 'package:cras/Modelo/temp_real.dart';
+import 'package:cras/Pantallas/Mantenimiento.dart';
+import 'package:cras/Pantallas/Mapa.dart';
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
-import 'package:splashscreen/splashscreen.dart';
+
+import 'AgregarDispensador.dart';
+import 'Resumen.dart';
 
 int _darkBlue = 0xFF022859;
 
@@ -143,44 +145,48 @@ class _Dispensadores extends State<PantallaDispensadores>{
               ),
             new ListTile(
                 title: Text("Mapa Dispensadores"),
-                onTap: (){/*
+                onTap: (){
                   Navigator.push(
                     context,
-                    FadeRoute(
-                      page: new MapSample(nombre: widget.nombreUsuario, correo: widget.correoUsuario,)),
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Mapa(nombre: widget.nombreUsuario,correo: widget.correoUsuario,)
+                    ),
                   );
-                */},
+                },
               ),
               new ListTile(
                 title: Text("Resumen"),
-                onTap: (){/*
+                onTap: (){
                   Navigator.push(
                     context,
-                    FadeRoute(
-                      page: new HomeDashboard(nombre: widget.nombreUsuario, correo: widget.correoUsuario,)),
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Resumen(nombre: widget.nombreUsuario,correo: widget.correoUsuario,)
+                    ),
                   );
-                */},
+                },
               ),
               new ListTile(
                 title: Text("Agregar Dispensador"),
-                onTap: (){/*
+                onTap: (){
+                  Navigator.of(context).pop();
                   Navigator.push(
                     context,
-                    FadeRoute(
-                      page: new HomeAgregarPage(nombre: widget.nombreUsuario, correo: widget.correoUsuario,)),
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => AgregarDispensador(nombre: widget.nombreUsuario,correo: widget.correoUsuario,)
+                    ),
                   );
-                */},
+                },
               ),
               new ListTile(
                 title: Text("Mantenimientos"),
                 onTap: (){
-                  /*Navigator.push(
+                  Navigator.push(
                     context,
-                    FadeRoute(
-                      page: new MantenimientosSample(nombre: widget.nombreUsuario, correo: widget.correoUsuario,)
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Mantenimiento(nombre: widget.nombreUsuario,correo: widget.correoUsuario,)
                     ),
                   );
-                */},
+                },
               )
           ],
         ),
