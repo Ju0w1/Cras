@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:cras/Modelo/ubicacion.dart';
 import 'package:geolocator/geolocator.dart';
+import 'Mantenimiento.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -171,13 +172,14 @@ final TextEditingController lugarcontroller = TextEditingController();
             ),
             new ListTile(
               title: Text("Mantenimientos"),
-              onTap: (){/*
+              onTap: (){
                 Navigator.push(
                   context,
-                  FadeRoute(
-                    page: new MantenimientosSample(nombre: widget.nombre,correo: widget.correo,)),
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Mantenimiento(nombre: widget.nombre,correo: widget.correo,)
+                  ),
                 );
-              */},
+              },
             ),
         ],
       ),
