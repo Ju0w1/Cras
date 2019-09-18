@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:splashscreen/splashscreen.dart';
+import 'package:flutter/cupertino.dart';
 
 int _darkBlue = 0xFF022859;
 
@@ -127,6 +128,38 @@ class _Dispensadores extends State<PantallaDispensadores>{
     return Scaffold(
       appBar: new AppBar(
         centerTitle: true,
+        actions: <Widget>[
+          ButtonBar(
+            alignment: MainAxisAlignment.end,
+            children: <Widget>[
+              InkWell(
+                child: Icon(Icons.note_add),
+                onTap: (){
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    child: new CupertinoAlertDialog(
+                      content: SingleChildScrollView(
+                        child: Column(
+                          children: <Widget>[
+                            Text("data")
+                          ],
+                        ),
+                      ),
+                      actions: <Widget>[
+                        new FlatButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: new Text("OK"))
+                      ],
+                    )
+                  );
+                },
+              )
+            ],
+          )
+        ],
         title: Text("Dispensador "+nombre),
         backgroundColor: Color(_darkBlue),
       ),

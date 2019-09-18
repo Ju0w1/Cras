@@ -76,7 +76,9 @@ class _Mantenimiento extends State<Mantenimiento>{
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              
+              Center(
+                child: Text("Prueba"),
+              )
             ],
           ),
         ),
