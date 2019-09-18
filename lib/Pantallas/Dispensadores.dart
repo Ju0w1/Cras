@@ -6,9 +6,14 @@ import 'package:cras/Pantallas/Mantenimiento.dart';
 import 'package:cras/Pantallas/Mapa.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+<<<<<<< HEAD
 
 import 'AgregarDispensador.dart';
 import 'Resumen.dart';
+=======
+import 'package:splashscreen/splashscreen.dart';
+import 'package:flutter/cupertino.dart';
+>>>>>>> 1ec2be2f73fe94912907d11a366f6990b1704740
 
 int _darkBlue = 0xFF022859;
 
@@ -129,6 +134,38 @@ class _Dispensadores extends State<PantallaDispensadores>{
     return Scaffold(
       appBar: new AppBar(
         centerTitle: true,
+        actions: <Widget>[
+          ButtonBar(
+            alignment: MainAxisAlignment.end,
+            children: <Widget>[
+              InkWell(
+                child: Icon(Icons.note_add),
+                onTap: (){
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    child: new CupertinoAlertDialog(
+                      content: SingleChildScrollView(
+                        child: Column(
+                          children: <Widget>[
+                            Text("data")
+                          ],
+                        ),
+                      ),
+                      actions: <Widget>[
+                        new FlatButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: new Text("OK"))
+                      ],
+                    )
+                  );
+                },
+              )
+            ],
+          )
+        ],
         title: Text("Dispensador "+nombre),
         backgroundColor: Color(_darkBlue),
       ),
