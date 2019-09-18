@@ -57,11 +57,12 @@ Future _getMarkers()async{
     recReal = RecReal.fromJson(json.decode(response2.body));
     final response3 = await http.get("$_urlTmpReal&serie=${_dispensador.dispensadores[i].nroSerie}");
     tempReal = TempReal.fromJson(json.decode(response3.body));
+    largo = tempReal.temperatura.length;
     _Marcadores.add(Marker(
       icon: BitmapDescriptor.fromAsset(path),
       infoWindow: InfoWindow(
         title: 'Dispensador'+' '+_dispensador.dispensadores[i].lugar,
-        snippet:'\$'+recReal.total[0].recaudado+' | '+tempReal.temperatura[0].prom+'°C',
+        snippet:'\$'+recReal.total[0].recaudado+' | '+tempReal.temperatura[largo-1].prom+'°C',
         onTap: (){
           Navigator.push(
             context,

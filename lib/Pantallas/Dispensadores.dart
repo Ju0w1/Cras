@@ -6,6 +6,7 @@ import 'package:cras/Modelo/temp_real.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:splashscreen/splashscreen.dart';
 
 int _darkBlue = 0xFF022859;
 
@@ -26,7 +27,7 @@ class PantallaDispensadores extends StatefulWidget{
   @override
   _Dispensadores createState() => _Dispensadores(); 
 }
-
+var tempActualImagen;
 var tempActual;
 var tempMax;
 var tempMin;
@@ -36,24 +37,14 @@ var serie;
 var tiempo =1;
 var nombre;
 var estado;
+var imagen;
 
 class _Dispensadores extends State<PantallaDispensadores>{
-  
   void initState(){
     super.initState();
     nombre = widget.nombreDisp;
     serie = widget.nroSerie;
-    getConexion();
-    getTemp();
-    String _setImage() {
-      if(tempActual >= 75) {
-        return "assets/images/temperature.png";
-      } else if(tempActual < 75) {
-        return "assets/images/cold.png";
-      }
-    }
   }
-  
   Future getConexion()async{
     var response = await http.get("$_urlConexion&serie=${widget.nroSerie}");
     if(response.statusCode==200){
@@ -65,17 +56,59 @@ class _Dispensadores extends State<PantallaDispensadores>{
     }
   }
 
-  Future getTemp()async{
+  Future getTempActual()async{
     var respose = await http.get("$_urlTmpReal&serie=$serie");
     if(respose.statusCode == 200){
       tempReal = TempReal.fromJson(json.decode(respose.body));
       if(tempReal.realizado == "1"){
         largo = tempReal.temperatura.length;
         tempActual = tempReal.temperatura[largo-1].prom;
-        tempMin = tempReal.temperatura[largo-1].min;
-        tempMax = tempReal.temperatura[largo-1].max;
       }
     }
+    return tempActual;
+  }
+  Future getTempMax()async{
+    var respose = await http.get("$_urlTmpReal&serie=$serie");
+    if(respose.statusCode == 200){
+      tempReal = TempReal.fromJson(json.decode(respose.body));
+      if(tempReal.realizado == "1"){
+        largo = tempReal.temperatura.length;
+        tempMax = tempReal.temperatura[largo-1].max;
+        tempActual = tempReal.temperatura[largo-1].prom;
+      }
+    }
+    return tempMax;
+  }
+  Future getTempMin()async{
+    var respose = await http.get("$_urlTmpReal&serie=$serie");
+    if(respose.statusCode == 200){
+      tempReal = TempReal.fromJson(json.decode(respose.body));
+      if(tempReal.realizado == "1"){
+        largo = tempReal.temperatura.length;
+        tempMin = tempReal.temperatura[largo-1].min;
+      }
+    }
+    return tempMin;
+  }
+  Future getTempImagen()async{
+    var respose = await http.get("$_urlTmpReal&serie=$serie");
+    if(respose.statusCode == 200){
+      tempReal = TempReal.fromJson(json.decode(respose.body));
+      if(tempReal.realizado == "1"){
+        largo = tempReal.temperatura.length;
+        tempActualImagen = tempReal.temperatura[largo-1].prom;
+        if(int.parse(tempActualImagen) >= 75) {
+          setState(() {
+            imagen="assets/images/temperature.png";
+          });
+        } else if(int.parse(tempActualImagen) < 75) {
+          setState(() {
+            imagen="assets/images/cold.png";
+          });
+        }
+      }
+    }
+    return imagen;
   }
 
   Future getRec()async{
@@ -86,6 +119,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
         recActual = recReal.total[0].recaudado;
       }
     }
+    return recActual;
   }
 
   @override
@@ -156,7 +190,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
           padding: EdgeInsets.all(15),
           child: Column(
             children: <Widget>[
-                Container(
+              Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
@@ -166,41 +200,128 @@ class _Dispensadores extends State<PantallaDispensadores>{
                 ),
               ),
               SizedBox(height: 10,),
-            Container(
+              Container(
                 height: 100,
                 width:  MediaQuery.of(context).size.width,                   
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          width: MediaQuery.of(context).size.width/1.5,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 25, top: 26),
-                            child: Column(
-                              children: <Widget>[
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text("Recaudación actual:",style: TextStyle(fontSize: 18,),),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(2),
-                                ),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: FutureBuilder(
-                                    future:getRec(),
-                                    builder: (BuildContext context, AsyncSnapshot snapshot) => Text("\$"+"$recActual",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),) ,
+                child: FutureBuilder(
+                  future: getRec(),
+                  builder: (BuildContext context,AsyncSnapshot snapshot){
+                    if(snapshot.data == null){
+                      return Center(
+                        child: CircularProgressIndicator(
+                          backgroundColor: Color(_darkBlue),
+                        ),
+                      );
+                    }else{
+                      return Row(
+                        children: <Widget>[
+                          Container(
+                            width: MediaQuery.of(context).size.width/1.5,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 25, top: 26),
+                              child: Column(
+                                children: <Widget>[
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text("Recaudación actual:",style: TextStyle(fontSize: 18,),),
                                   ),
-                                ),
-                              ],
-                            )
-                          ) 
+                                  Padding(
+                                    padding: EdgeInsets.all(2),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text("\$"+"$recActual",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
+                                  ),
+                                ],
+                              )
+                            ) 
+                          ),
+                          Container(
+                            child: Image.asset("assets/images/coins.png",
+                              scale: 7.5,
+                              alignment: Alignment.centerRight,),
+                          ),
+                        ],
+                      );
+                    }
+                  },
+                ),
+                  decoration: new BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black,
+                        blurRadius: 2, // has the effect of softening the shadow
+                        spreadRadius: 0, // has the effect of extending the shadow
+                        offset: Offset(
+                          0, // horizontal, move right 10
+                          2, // vertical, move down 10
                         ),
-                        Container(
-                          child: Image.asset("assets/images/coins.png",
-                            scale: 7.5,
-                            alignment: Alignment.centerRight,),
-                        ),
-                      ],
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 25,),
+                Container(
+                height: 100,
+                width:  MediaQuery.of(context).size.width,                   
+                    child: FutureBuilder(
+                      future: getTempActual(),
+                      builder: (BuildContext context, AsyncSnapshot snapshot){
+                        if(snapshot.data == null){
+                          return Center(
+                            child: CircularProgressIndicator(
+                              backgroundColor: Color(_darkBlue),
+                            ),
+                          );
+                        }else{
+                          return Row(
+                            children: <Widget>[
+                              Container(
+                                width: MediaQuery.of(context).size.width/1.5,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 25, top: 26),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text("Temperatura actual",style: TextStyle(fontSize: 18),),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(2),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.centerLeft,          
+                                        child: Text("$tempActual°C",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
+                                      ),
+                                    ],
+                                  )
+                                ) 
+                              ),
+                              Container(
+                                child: FutureBuilder(
+                                  future: getTempImagen(),
+                                  builder: (BuildContext context, AsyncSnapshot snapshot){
+                                    if(snapshot.data == null){
+                                      return  Center(
+                                          child:  CircularProgressIndicator(
+                                          backgroundColor: Color(_darkBlue),
+                                        ),
+                                      );
+                                    }else{
+                                      return Image.asset(imagen,
+                                        scale: 7.5,
+                                        alignment: Alignment.centerRight,
+                                      );
+                                    }
+                                  }
+                                )
+                              ),
+                            ],
+                          );
+                        }
+                      }
                     ),
                   decoration: new BoxDecoration(
                     color: Colors.white,
@@ -222,38 +343,48 @@ class _Dispensadores extends State<PantallaDispensadores>{
                 Container(
                 height: 100,
                 width:  MediaQuery.of(context).size.width,                   
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          width: MediaQuery.of(context).size.width/1.5,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 25, top: 26),
-                            child: Column(
-                              children: <Widget>[
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text("Temperatura actual:",style: TextStyle(fontSize: 18),),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(2),
-                                ),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: FutureBuilder(
-                                    future: getTemp(),
-                                    builder: (BuildContext context, AsyncSnapshot snapshot)=>Text("$tempActual°C",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ) 
-                        ),
-                        /*Container(
-                          child: Image.asset(_setImage(),
-                            scale: 7.5,
-                            alignment: Alignment.centerRight,),
-                        ),*/
-                      ],
+                    child: FutureBuilder(
+                      future: getTempMax(),
+                      builder: (BuildContext context, AsyncSnapshot snapshot){
+                        if(snapshot.data == null){
+                          return Center(
+                            child: CircularProgressIndicator(
+                              backgroundColor: Color(_darkBlue),
+                            ),
+                          );
+                        }else{
+                          return Row(
+                            children: <Widget>[
+                              Container(
+                                width: MediaQuery.of(context).size.width/1.5,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 25, top: 26),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text("Temperatura máxima",style: TextStyle(fontSize: 18),),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(2),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.centerLeft,          
+                                        child: Text("$tempMax°C",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
+                                      ),
+                                    ],
+                                  )
+                                ) 
+                              ),
+                              Container(
+                                child: Image.asset("assets/images/temperature.png",
+                                  scale: 7.5,
+                                  alignment: Alignment.centerRight,),
+                              ),
+                            ],
+                          );
+                        }
+                      }
                     ),
                   decoration: new BoxDecoration(
                     color: Colors.white,
@@ -273,93 +404,50 @@ class _Dispensadores extends State<PantallaDispensadores>{
                 ),
                 SizedBox(height: 25,),
                 Container(
-                height: 100,
-                width:  MediaQuery.of(context).size.width,                   
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          width: MediaQuery.of(context).size.width/1.5,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 25, top: 26),
-                            child: Column(
-                              children: <Widget>[
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text("Temperatura máxima",style: TextStyle(fontSize: 18),),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(2),
-                                ),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: FutureBuilder(
-                                    future: getTemp(),
-                                    builder: (BuildContext context, AsyncSnapshot snapshot)=>Text("$tempMax°C",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ) 
-                        ),
-                        Container(
-                          child: Image.asset("assets/images/temperature.png",
-                            scale: 7.5,
-                            alignment: Alignment.centerRight,),
-                        ),
-                      ],
-                    ),
-                  decoration: new BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 2, // has the effect of softening the shadow
-                        spreadRadius: 0, // has the effect of extending the shadow
-                        offset: Offset(
-                          0, // horizontal, move right 10
-                          2, // vertical, move down 10
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 25,),
-                    Container(
-                height: 100,
-                width:  MediaQuery.of(context).size.width,                   
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          width: MediaQuery.of(context).size.width/1.5,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 25, top: 26),
-                            child: Column(
-                              children: <Widget>[
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text("Temperatura mínima",style: TextStyle(fontSize: 18),),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(2),
-                                ),
-                                Align(
-                                  alignment: Alignment.centerLeft,          
-                                  child: FutureBuilder(
-                                    future: getTemp(),
-                                    builder: (BuildContext context, AsyncSnapshot snapshot)=>Text("$tempMin°C",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ) 
-                        ),
-                        Container(
-                          child: Image.asset("assets/images/cold.png",
-                            scale: 7.5,
-                            alignment: Alignment.centerRight,),
-                        ),
-                      ],
+                  height: 100,
+                  width:  MediaQuery.of(context).size.width,                   
+                    child: FutureBuilder(
+                      future: getTempMin(),
+                      builder: (BuildContext context, AsyncSnapshot snapshot){
+                        if(snapshot.data == null){
+                          return Center(
+                            child: CircularProgressIndicator(
+                              backgroundColor: Color(_darkBlue),
+                            ),
+                          );
+                        }else{
+                          return Row(
+                            children: <Widget>[
+                              Container(
+                                width: MediaQuery.of(context).size.width/1.5,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 25, top: 26),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text("Temperatura mínima",style: TextStyle(fontSize: 18),),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(2),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.centerLeft,          
+                                        child: Text("$tempMin°C",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
+                                      ),
+                                    ],
+                                  )
+                                ) 
+                              ),
+                              Container(
+                                child: Image.asset("assets/images/cold.png",
+                                  scale: 7.5,
+                                  alignment: Alignment.centerRight,),
+                              ),
+                            ],
+                          );
+                        }
+                      }
                     ),
                   decoration: new BoxDecoration(
                     color: Colors.white,
