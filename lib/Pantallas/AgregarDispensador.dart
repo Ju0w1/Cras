@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'dart:ui';
 
+import 'Mantenimiento.dart';
+import 'Mapa.dart';
+import 'Resumen.dart';
+
 int _darkBlue = 0xFF022859;
 int _midBlue = 0xFF2E78A6;
 int _lightBlue = 0xFF6AAED9;
@@ -59,28 +63,57 @@ class _AgregarDispensador extends State<AgregarDispensador> {
         child: new ListView(
           children: <Widget>[
             new UserAccountsDrawerHeader(
-                accountName: new Text("PEPITO"/*widget.nombre*/),
+                accountName: new Text(widget.nombre),
                 decoration: BoxDecoration(color: Color(_darkBlue)),
-                accountEmail: new Text(""/*widget.correo*/),
+                accountEmail: new Text(widget.correo),
                 currentAccountPicture: new CircleAvatar(
                   backgroundImage: ExactAssetImage("assets/images/user.png"),
                 ),
               ),
             new ListTile(
                 title: Text("Mapa Dispensadores"),
-                onTap: (){},
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Mapa(nombre: widget.nombre,correo: widget.correo,)
+                    ),
+                  );
+                },
               ),
               new ListTile(
                 title: Text("Resumen"),
-                onTap: (){},
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Resumen(nombre: widget.nombre,correo: widget.correo,)
+                    ),
+                  );
+                },
               ),
               new ListTile(
                 title: Text("Agregar Dispensador"),
-                onTap: (){},
+                onTap: (){
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => AgregarDispensador(nombre: widget.nombre,correo: widget.correo,)
+                    ),
+                  );
+                },
               ),
               new ListTile(
                 title: Text("Mantenimientos"),
-                onTap: (){},
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Mantenimiento(nombre: widget.nombre,correo: widget.correo,)
+                    ),
+                  );
+                },
               ),
           ],
         ),
