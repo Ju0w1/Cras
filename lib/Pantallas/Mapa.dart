@@ -172,8 +172,7 @@ final TextEditingController lugarcontroller = TextEditingController();
             new ListTile(
               title: Text("Agregar Dispensador"),
               onTap: (){
-                Navigator.of(context).pop();
-                  Navigator.push(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => AgregarDispensador(nombre: widget.nombre,correo: widget.correo,)
@@ -199,19 +198,20 @@ final TextEditingController lugarcontroller = TextEditingController();
     height: MediaQuery.of(context).size.height,
     width: MediaQuery.of(context).size.width,
     child: FutureBuilder(
-        future: _getMarkers(),
-        builder: (BuildContext context, AsyncSnapshot snapshot){
-          return GoogleMap(
-            markers: Set.from(_Marcadores),
-            initialCameraPosition: CameraPosition(
-              target: LatLng(-32.701760, -57.638912),
-              zoom: 7.5),
-            onMapCreated: (GoogleMapController controller) {
-            mapController = controller;
-          },
-          );
+      future: _getMarkers(),
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+        return GoogleMap(
+          markers: Set.from(_Marcadores),
+          initialCameraPosition: CameraPosition(
+            target: LatLng(-32.701760, -57.638912),
+            zoom: 7.5),
+          onMapCreated: (GoogleMapController controller) {
+          mapController = controller;
         },
-    ),),
+        );
+      },
+    ),
+  ),
   floatingActionButton: Align(
     alignment: Alignment.bottomLeft,
       child: Container(
