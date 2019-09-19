@@ -6,22 +6,22 @@
 ///
 /// Additional annotations may be added simply by adding additional
 /// [Charts.RangeAnnotationSegment] items to the list.
-import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:flutter/material.dart';
+//import 'package:charts_flutter/flutter.dart' as charts;
+/*import 'package:flutter/material.dart';
 
 class TimeSeriesLineAnnotationChart extends StatelessWidget {
-  final List<charts.Series> seriesList;
+  //final List<charts.Series> seriesList;
   final bool animate;
 
-  TimeSeriesLineAnnotationChart(this.seriesList, {this.animate});
+  //TimeSeriesLineAnnotationChart(this.seriesList, {this.animate});
 
   /// Creates a [TimeSeriesChart] with sample data and no transition.
-  factory TimeSeriesLineAnnotationChart.withSampleData() {
+  /*factory TimeSeriesLineAnnotationChart.withSampleData() {
     return new TimeSeriesLineAnnotationChart(
       _createSampleData(),
       // Disable animations for image tests.
       animate: false,
-    );
+    );*/
   }
 
 
@@ -73,4 +73,4 @@ class TimeSeriesSales {
   final int sales;
 
   TimeSeriesSales(this.time, this.sales);
-}
+}*/

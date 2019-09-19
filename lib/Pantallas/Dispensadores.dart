@@ -144,7 +144,32 @@ class _Dispensadores extends State<PantallaDispensadores>{
                       content: SingleChildScrollView(
                         child: Column(
                           children: <Widget>[
-                            Text("data")
+                            GestureDetector(
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.note),
+                                  SizedBox(width: 15),
+                                  Text(
+                                    "Lista de los Mantenimientos",
+                                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                                  )
+                                ],
+                              ),
+                              onTap: (){print("object");},
+                            ),
+                            SizedBox(height: 15,),
+                            GestureDetector(
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.note_add),
+                                  SizedBox(width: 15,),
+                                  Text("Agregar Mantenimiento",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),)
+                                ],
+                              ),
+                              onTap: (){
+                                print("111");
+                              },
+                            )
                           ],
                         ),
                       ),

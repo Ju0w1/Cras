@@ -193,7 +193,7 @@ class _Resumen extends State<Resumen>{
                   ),
                height: 200,
                width: MediaQuery.of(context).size.width,
-               child: TimeSeriesLineAnnotationChart.withSampleData(),
+               child: Text("data") //TimeSeriesLineAnnotationChart(),
              )
             ],
           ),
