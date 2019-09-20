@@ -7,7 +7,8 @@ import 'package:cras/Pantallas/Mapa.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
+import 'SubPantallas/AgregarMantenimiento.dart';
+import 'SubPantallas/ListaMantenimiento.dart';
 import 'AgregarDispensador.dart';
 import 'Resumen.dart';
 
@@ -155,7 +156,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
                                   )
                                 ],
                               ),
-                              onTap: (){print("object");},
+                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> ListaMantenimiento(nro_serie:serie,nombre:widget.nombreUsuario,correo:widget.correoUsuario))),
                             ),
                             SizedBox(height: 15,),
                             GestureDetector(
@@ -166,9 +167,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
                                   Text("Agregar Mantenimiento",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),)
                                 ],
                               ),
-                              onTap: (){
-                                print("111");
-                              },
+                              onTap:() => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> AgregarMantenimiento())),
                             )
                           ],
                         ),
