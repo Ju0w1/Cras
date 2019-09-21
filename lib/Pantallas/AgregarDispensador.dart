@@ -10,8 +10,6 @@ import 'Mapa.dart';
 import 'Resumen.dart';
 
 int _darkBlue = 0xFF022859;
-int _midBlue = 0xFF2E78A6;
-int _lightBlue = 0xFF6AAED9;
 Reg registro;
 
 String mensaje_snack;
@@ -191,7 +189,7 @@ class _AgregarDispensador extends State<AgregarDispensador> {
                     textColor: Colors.white,
                     color: Color(_darkBlue),
                     onPressed: ()async{
-                      var response = await http.get("${_urlInicio}&serie=${seriecontroller.text}&capacidad=${capacidadcontroller.text}&temp_max=${maxcontroller.text}&temp_min=${mincontroller.text}");
+                      var response = await http.get("$_urlInicio&serie=${seriecontroller.text}&capacidad=${capacidadcontroller.text}&temp_max=${maxcontroller.text}&temp_min=${mincontroller.text}");
                       print(response);
                       if(response.statusCode==200){
                         registro=Reg.fromJson(json.decode(response.body));

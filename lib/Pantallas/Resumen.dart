@@ -4,7 +4,7 @@ import 'package:cras/Pantallas/Mapa.dart';
 import 'package:http/http.dart' as http;
 import 'package:cras/Modelo/recTotal.dart';
 import 'package:flutter/material.dart';
-import 'package:cras/Gráficas/Grafica.dart';
+//import 'package:cras/Gráficas/Grafica.dart';
 
 import 'AgregarDispensador.dart';
 
@@ -193,7 +193,7 @@ class _Resumen extends State<Resumen>{
                   ),
                height: 200,
                width: MediaQuery.of(context).size.width,
-               child: Text("data") //TimeSeriesLineAnnotationChart(),
+               //child: TimeSeriesLineAnnotationChart.withSampleData(),
              )
             ],
           ),
