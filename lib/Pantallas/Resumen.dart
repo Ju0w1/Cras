@@ -4,15 +4,15 @@ import 'package:cras/Pantallas/Mapa.dart';
 import 'package:http/http.dart' as http;
 import 'package:cras/Modelo/recTotal.dart';
 import 'package:flutter/material.dart';
-//import 'package:cras/Gráficas/Grafica.dart';
-
+import 'package:charts_flutter/flutter.dart' as charts;
+import '../Modelo/Grafica_Recuadacion.dart';
 import 'AgregarDispensador.dart';
 
 int _darkBlue = 0xFF022859;
 var recActualTotal;
 
 RecTotal recTotal;
-
+GrafRec _grafRec;
 const _urlRecReal = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=rectot";
 
 class Resumen extends StatefulWidget{
@@ -22,9 +22,28 @@ class Resumen extends StatefulWidget{
   @override
   _Resumen createState() => _Resumen(); 
 }
-
+ var data;
+var char;
 class _Resumen extends State<Resumen>{
-  
+ 
+  List<Rec> datos = [];
+  Future _getRecGraf() async{
+    datos.clear();
+    
+    var response = await http.get("http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=grafrec");
+    if(response.statusCode == 200){
+      _grafRec = GrafRec.fromJson(json.decode(response.body));
+      for(int i = 0; i < _grafRec.recau.length;i++){
+        datos.add(new Rec(DateTime.parse(_grafRec.recau[i].fecha), int.parse(_grafRec.recau[i].recaudado), Colors.black));
+      }
+    }
+    return [charts.Series(
+        data: datos,
+        domainFn: (Rec rec,_)=> rec.fecha,
+        measureFn: (Rec rec,_)=> rec.racaudado,
+        id: 'Recaudado',
+      )];
+  }
   Future _getRecTot() async{
     var respose = await http.get("${_urlRecReal}");
       if(respose.statusCode == 200){
@@ -35,6 +54,7 @@ class _Resumen extends State<Resumen>{
       }
     return recActualTotal;
   }
+
 
   @override
   Widget build(BuildContext context){
@@ -176,7 +196,7 @@ class _Resumen extends State<Resumen>{
              ),
              Container(
                padding: EdgeInsets.all(10),
-               decoration: new BoxDecoration(
+              decoration: new BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(20.0)),
                     color: Colors.white,
                     boxShadow: [
@@ -193,7 +213,23 @@ class _Resumen extends State<Resumen>{
                   ),
                height: 200,
                width: MediaQuery.of(context).size.width,
-               //child: TimeSeriesLineAnnotationChart.withSampleData(),
+               child: FutureBuilder(
+                 future: _getRecGraf(),
+                 builder:  (BuildContext context, AsyncSnapshot snapshot){
+                   if(snapshot.data == null){
+                      //print(data);
+                      return Center(
+                        child: CircularProgressIndicator(
+                          backgroundColor: Color(_darkBlue),
+                        ),
+                      );
+                   }else{
+                     return Container(
+                       child: charts.TimeSeriesChart(snapshot.data,animate: true,animationDuration: Duration(seconds: 5),),
+                     );
+                   }
+                 },
+               ),
              )
             ],
           ),
@@ -201,4 +237,11 @@ class _Resumen extends State<Resumen>{
       ),
     );
   }
+}
+
+class Rec {
+  DateTime fecha;
+  int racaudado;
+  Color color;
+  Rec(this.fecha,this.racaudado, this.color);
 }

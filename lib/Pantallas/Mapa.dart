@@ -55,11 +55,11 @@ Future _getMarkers()async{
   final response = await http.get(_urlDispensadores);
   _dispensador = Dispensador.fromJson(json.decode(response.body));
   for(var i=0;i<_dispensador.dispensadores.length;i++){
-    final response2 = await http.get("$_urlRecReal&serie=${_dispensador.dispensadores[i].nroSerie}");
-    recReal = RecReal.fromJson(json.decode(response2.body));
-    final response3 = await http.get("$_urlTmpReal&serie=${_dispensador.dispensadores[i].nroSerie}");
-    tempReal = TempReal.fromJson(json.decode(response3.body));
-    largo = tempReal.temperatura.length;
+    //final response2 = await http.get("$_urlRecReal&serie=${_dispensador.dispensadores[i].nroSerie}");
+    //recReal = RecReal.fromJson(json.decode(response2.body));
+    //final response3 = await http.get("$_urlTmpReal&serie=${_dispensador.dispensadores[i].nroSerie}");
+    //tempReal = TempReal.fromJson(json.decode(response3.body));
+    //largo = tempReal.temperatura.length;
     _Marcadores.add(Marker(
       icon: BitmapDescriptor.fromAsset(path),
       infoWindow: InfoWindow(
