@@ -10,20 +10,9 @@ import 'Mapa.dart';
 import 'Resumen.dart';
 
 int _darkBlue = 0xFF022859;
-int _midBlue = 0xFF2E78A6;
-int _lightBlue = 0xFF6AAED9;
 Reg registro;
 
 String mensaje_snack;
-
-final GlobalKey<ScaffoldState> _scaffoldKey= new GlobalKey<ScaffoldState>();
-_showSnackBar(){
-  final snackBar = new SnackBar(
-    content: Text(mensaje_snack),
-    duration: Duration(seconds: 3),
-  );
-  _scaffoldKey.currentState.showSnackBar(snackBar);
-}
 
 const _urlInicio ="http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=Dispensador";
 
@@ -42,11 +31,21 @@ class AgregarDispensador extends StatefulWidget {
     maxcontroller.clear();
     mincontroller.clear();
   }
-  TextEditingController seriecontroller = TextEditingController();
-  TextEditingController capacidadcontroller = TextEditingController();
-  TextEditingController maxcontroller = TextEditingController();
-  TextEditingController mincontroller = TextEditingController();
+  final TextEditingController seriecontroller = TextEditingController();
+  final TextEditingController capacidadcontroller = TextEditingController();
+  final TextEditingController maxcontroller = TextEditingController();
+  final TextEditingController mincontroller = TextEditingController();
 class _AgregarDispensador extends State<AgregarDispensador> {
+
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  _showSnackBar(){
+    final snackBar = new SnackBar(
+      content: Text(mensaje_snack),
+      duration: Duration(seconds: 3),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar).close();
+  }
+
   @override
   Widget build(BuildContext context){
     return MaterialApp(
@@ -73,10 +72,11 @@ class _AgregarDispensador extends State<AgregarDispensador> {
             new ListTile(
                 title: Text("Mapa Dispensadores"),
                 onTap: (){
+                  Navigator.of(context).pop();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (BuildContext context) => Mapa(nombre: widget.nombre,correo: widget.correo,)
+                      builder: (BuildContext context) => new Mapa(nombre: widget.nombre,correo: widget.correo,)
                     ),
                   );
                 },
@@ -84,6 +84,7 @@ class _AgregarDispensador extends State<AgregarDispensador> {
               new ListTile(
                 title: Text("Resumen"),
                 onTap: (){
+                  Navigator.of(context).pop();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -99,7 +100,7 @@ class _AgregarDispensador extends State<AgregarDispensador> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (BuildContext context) => AgregarDispensador(nombre: widget.nombre,correo: widget.correo,)
+                      builder: (BuildContext context) => new AgregarDispensador(nombre: widget.nombre,correo: widget.correo,)
                     ),
                   );
                 },
@@ -107,6 +108,7 @@ class _AgregarDispensador extends State<AgregarDispensador> {
               new ListTile(
                 title: Text("Mantenimientos"),
                 onTap: (){
+                  Navigator.of(context).pop();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -191,7 +193,7 @@ class _AgregarDispensador extends State<AgregarDispensador> {
                     textColor: Colors.white,
                     color: Color(_darkBlue),
                     onPressed: ()async{
-                      var response = await http.get("${_urlInicio}&serie=${seriecontroller.text}&capacidad=${capacidadcontroller.text}&temp_max=${maxcontroller.text}&temp_min=${mincontroller.text}");
+                      var response = await http.get("$_urlInicio&serie=${seriecontroller.text}&capacidad=${capacidadcontroller.text}&temp_max=${maxcontroller.text}&temp_min=${mincontroller.text}");
                       print(response);
                       if(response.statusCode==200){
                         registro=Reg.fromJson(json.decode(response.body));

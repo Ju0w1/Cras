@@ -11,12 +11,12 @@ int _darkBlue = 0xFF022859;
 Passwd passwd;
 final _url = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=pwd";
 
-String mensaje_stack;
+String mensaje_stackRec;
 
 final GlobalKey<ScaffoldState> _scaffoldKeyPasswd = new GlobalKey<ScaffoldState>();
 _showSnackBar(){
     final snackBar = new SnackBar(
-      content: Text(mensaje_stack),
+      content: Text(mensaje_stackRec),
       duration: Duration(seconds: 3),
     );
     _scaffoldKeyPasswd.currentState.showSnackBar(snackBar);
@@ -95,7 +95,7 @@ class _RecuperarContra extends State<RecuperarContra>{
                       if(response.statusCode == 200){
                         passwd = Passwd.fromJson(json.decode(response.body));
                         if(passwd.realizado == "1"){
-                          mensaje_stack = passwd.mensaje;
+                          mensaje_stackRec = passwd.mensaje;
                           _showSnackBar();
                           Timer(Duration(seconds: 3), (){
                             Navigator.of(context).pop();
@@ -105,11 +105,11 @@ class _RecuperarContra extends State<RecuperarContra>{
                             );
                           });
                         }else{
-                          mensaje_stack = passwd.mensaje;
+                          mensaje_stackRec = passwd.mensaje;
                           _showSnackBar();
                         }
                       }else{
-                        mensaje_stack = "Fallo de Conexión";
+                        mensaje_stackRec = "Fallo de Conexión";
                         _showSnackBar();
                       }
                     },

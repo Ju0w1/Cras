@@ -54,10 +54,11 @@ class _Dispensadores extends State<PantallaDispensadores>{
     if(response.statusCode==200){
       conexion = Conexion.fromJson(json.decode(response.body));
       if(conexion.realizado == "1"){
-        estado = conexion.estado[0].estado;
-        print (estado);
+        var largocon = conexion.estado.length;
+        estado = conexion.estado[largocon-1].estado;
       }
     }
+    return estado;
   }
   Future grafica()async{
     var respose = await http.get("$_urlTmpReal&serie=3");
@@ -279,14 +280,39 @@ class _Dispensadores extends State<PantallaDispensadores>{
           padding: EdgeInsets.all(15),
           child: Column(
             children: <Widget>[
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text("Conexión: ",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold ),),
-                    Text("En Línea/Fuera de Línea",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.red)),
-                  ],
-                ),
+              FutureBuilder(
+                future: getConexion(),
+                builder: (BuildContext context, AsyncSnapshot snapshot){
+                  if(snapshot.data == null){
+                    return Container(
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          backgroundColor: Color(_darkBlue),
+                        ),
+                      ),
+                    );
+                  }else if(estado == "1"){
+                    return Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text("Conexión: ",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold ),),
+                          Text("En Línea",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.lightGreen)),
+                        ],
+                      ),
+                    );
+                  }else {
+                    return Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text("Conexión: ",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold ),),
+                          Text("Sin Conexión",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.red)),
+                        ],
+                      ),
+                    );
+                  }
+                },
               ),
               SizedBox(height: 10,),
               Container(

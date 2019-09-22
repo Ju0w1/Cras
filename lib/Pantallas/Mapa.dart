@@ -47,24 +47,34 @@ class Mapa extends StatefulWidget{
 }
 //=====================CONTROLLERS=====================\\
 class _MapaState extends State<Mapa> {
+
+  GlobalKey<ScaffoldState> _scaffoldKey= new GlobalKey<ScaffoldState>();
+  _showSnackBar(){
+    final snackBar = new SnackBar(
+      content: Text(mensaje_snack),
+      duration: Duration(seconds: 3),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
 //=====================DECLARACIÓN MAPA=====================\\
   GoogleMapController mapController;
   List <Marker> _Marcadores = [];
 //=====================MARCADORES=====================\\
-Future _getMarkers()async{
+Future<List> _getMarkers()async{
   final response = await http.get(_urlDispensadores);
   _dispensador = Dispensador.fromJson(json.decode(response.body));
   for(var i=0;i<_dispensador.dispensadores.length;i++){
-    final response2 = await http.get("$_urlRecReal&serie=${_dispensador.dispensadores[i].nroSerie}");
-    recReal = RecReal.fromJson(json.decode(response2.body));
-    final response3 = await http.get("$_urlTmpReal&serie=${_dispensador.dispensadores[i].nroSerie}");
-    tempReal = TempReal.fromJson(json.decode(response3.body));
-    largo = tempReal.temperatura.length;
+    //final response2 = await http.get("$_urlRecReal&serie=${_dispensador.dispensadores[i].nroSerie}");
+    //recReal = RecReal.fromJson(json.decode(response2.body));
+    //final response3 = await http.get("$_urlTmpReal&serie=${_dispensador.dispensadores[i].nroSerie}");
+    //tempReal = TempReal.fromJson(json.decode(response3.body));
+    //largo = tempReal.temperatura.length;
     _Marcadores.add(Marker(
       icon: BitmapDescriptor.fromAsset(path),
       infoWindow: InfoWindow(
         title: 'Dispensador'+' '+_dispensador.dispensadores[i].lugar,
-        snippet:'\$'+recReal.total[0].recaudado+' | '+tempReal.temperatura[largo-1].prom+'°C',
+        //snippet:'\$'+recReal.total[0].recaudado+' | '+tempReal.temperatura[largo-1].prom+'°C',
         onTap: (){
           Navigator.push(
             context,
@@ -79,6 +89,7 @@ Future _getMarkers()async{
       position: LatLng(double.parse(_dispensador.dispensadores[i].lat),double.parse(_dispensador.dispensadores[i].long))
     ));
   }
+  return _Marcadores;
 }
 //=====================FUTURE UBICACIÓN=====================\\
 Future ubicarDispensador()async{
@@ -91,8 +102,9 @@ Future ubicarDispensador()async{
     print(respose.statusCode);
     print(latitude.toString()+longitude.toString());
     if(ubicacion.realizado == "1"){
-      print('ubicado');
-    }else{ 
+      return mensaje_snack = ubicacion.mensaje;
+    }else{
+      return mensaje_snack = ubicacion.mensaje;
     }
   }
 }
@@ -102,10 +114,10 @@ var response = await http.get(_urlObtenerInactivos);
   if(response.statusCode == 200){
     inactivos = Inactivos.fromJson(json.decode(response.body));
     dispInactivos.clear();
-      _getDispIn();
-      for(int i = 0;i<inactivos.dispensadores.length;i++){
-        dispInactivos.add(inactivos.dispensadores[i].serie);
-      }
+    _getDispIn();
+    for(int i = 0;i<inactivos.dispensadores.length;i++){
+      dispInactivos.add(inactivos.dispensadores[i].serie);
+    }
   }
 }
 PermissionStatus _status;
@@ -117,7 +129,7 @@ var email;
 void initState() {
   super.initState();
   email= widget.nombre;
-  //=====================SOLICITUD DE PERMISOS PARA LOCALIZACIÓN=====================\\
+//=====================SOLICITUD DE PERMISOS PARA LOCALIZACIÓN=====================\\
   PermissionHandler().checkPermissionStatus(PermissionGroup.locationWhenInUse).then(_updateStatus);
 }
 
@@ -128,6 +140,7 @@ final TextEditingController lugarcontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         actions: <Widget>[
         ],
@@ -153,7 +166,7 @@ final TextEditingController lugarcontroller = TextEditingController();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => Mapa(nombre: widget.nombre,correo: widget.correo,)
+                    builder: (BuildContext context) => new Mapa(nombre: widget.nombre,correo: widget.correo,)
                   ),
                 );
               },
@@ -161,6 +174,7 @@ final TextEditingController lugarcontroller = TextEditingController();
             new ListTile(
               title: Text("Resumen"),
               onTap: (){
+                Navigator.of(context).pop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -172,10 +186,11 @@ final TextEditingController lugarcontroller = TextEditingController();
             new ListTile(
               title: Text("Agregar Dispensador"),
               onTap: (){
+                Navigator.of(context).pop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => AgregarDispensador(nombre: widget.nombre,correo: widget.correo,)
+                    builder: (BuildContext context) => new AgregarDispensador(nombre: widget.nombre,correo: widget.correo,)
                   ),
                 );
               },
@@ -183,6 +198,7 @@ final TextEditingController lugarcontroller = TextEditingController();
             new ListTile(
               title: Text("Mantenimientos"),
               onTap: (){
+                Navigator.of(context).pop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -200,15 +216,27 @@ final TextEditingController lugarcontroller = TextEditingController();
     child: FutureBuilder(
       future: _getMarkers(),
       builder: (BuildContext context, AsyncSnapshot snapshot){
-        return GoogleMap(
-          markers: Set.from(_Marcadores),
-          initialCameraPosition: CameraPosition(
-            target: LatLng(-32.701760, -57.638912),
-            zoom: 7.5),
-          onMapCreated: (GoogleMapController controller) {
-          mapController = controller;
-        },
-        );
+        if(snapshot.data == null){
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Color(_darkBlue),
+              ),
+            ),
+          );
+        }else{
+          return GoogleMap(
+            markers: Set.from(_Marcadores),
+            initialCameraPosition: CameraPosition(
+              target: LatLng(-32.701760, -57.638912),
+              zoom: 7.5
+            ),
+            onMapCreated: (GoogleMapController controller) {
+            mapController = controller;
+            },
+          );
+        }
       },
     ),
   ),
@@ -223,73 +251,66 @@ final TextEditingController lugarcontroller = TextEditingController();
           _askPermission();
           showDialog(
             context: context,
-                builder: (BuildContext context){
-                  return AlertDialog(
-                    //contentPadding: EdgeInsets.all(20),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(35))),
-                    backgroundColor: Colors.white,
-                    title: new Text("Agregar Ubicación".toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
-                    actions: <Widget>[
-                         Column(
-                          	children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                      padding: EdgeInsets.only(right:10,left: 20),
-                                      alignment: Alignment.centerLeft,
-                                      child: FutureBuilder(
-                                        future: _getDispIn(),
-                                        builder: (BuildContext context, AsyncSnapshot snapshot) => dropmenu(inactivos),
-                                      ),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.centerRight,
-                                      //height: MediaQuery.of(context).size.height,
-                                      width: MediaQuery.of(context).size.width/3,
-                                      child: TextField(
-                                        //controller: clavecontroller,
-                                        obscureText: false,
-                                        controller: lugarcontroller,
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: Colors.white,
-                                          labelStyle: TextStyle(color: Colors.grey),
-                                          prefixIcon: Icon(Icons.place,color: Color(_darkBlue),),
-                                          labelText: 'Lugar',
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(8))
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+              builder: (BuildContext context){
+                return AlertDialog(
+                  //contentPadding: EdgeInsets.all(20),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(35))),
+                  backgroundColor: Colors.white,
+                  title: new Text("Agregar Ubicación".toUpperCase(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+                  actions: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(right:10,left: 20),
+                              alignment: Alignment.centerLeft,
+                              child: FutureBuilder(
+                                future: _getDispIn(),
+                                builder: (BuildContext context, AsyncSnapshot snapshot) => dropmenu(inactivos),
+                              ),
+                            ),
+                            Container(
+                              alignment: Alignment.centerRight,
+                              //height: MediaQuery.of(context).size.height,
+                              width: MediaQuery.of(context).size.width/3,
+                              child: TextField(
+                                //controller: clavecontroller,
+                                obscureText: false,
+                                controller: lugarcontroller,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  labelStyle: TextStyle(color: Colors.grey),
+                                  prefixIcon: Icon(Icons.place,color: Color(_darkBlue),),
+                                  labelText: 'Lugar',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(8))
+                                  ),
                                 ),
-                          	    IconButton(
-                                  iconSize: 90,
-                                  icon: Icon (Icons.location_on,color: Colors.redAccent,size: 70,),
-                                  onPressed: ()async{
-                                    ubicarDispensador();
-                                    Navigator.of(context).pop();
-                                    Timer(Duration(seconds: 2), (){
-                                      Navigator.of(context).pushAndRemoveUntil(
-                                        MaterialPageRoute(
-                                          builder: (BuildContext context) =>new Mapa(nombre: widget.nombre,correo: widget.correo,)
-                                        ),
-                                        (Route<dynamic> route) => false,
-                                      );
-                                    });
-                                  },
-                                ),
-                          	  ],
-                          	),
-                    ],
-                  );
-                },
-              );
-        }
-    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          iconSize: 90,
+                          icon: Icon (Icons.location_on,color: Colors.redAccent,size: 70,),
+                          onPressed: ()async{
+                            ubicarDispensador();
+                            Navigator.of(context).pop();
+                            _showSnackBar();
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+        ),
       ),
   ),
 );
