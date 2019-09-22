@@ -27,14 +27,24 @@ class Dispensadores {
   String lat;
   String long;
   String lugar;
+  String total;
+  String temperatura;
 
-  Dispensadores({this.nroSerie, this.lat, this.long, this.lugar});
+  Dispensadores(
+      {this.nroSerie,
+      this.lat,
+      this.long,
+      this.lugar,
+      this.total,
+      this.temperatura});
 
   Dispensadores.fromJson(Map<String, dynamic> json) {
     nroSerie = json['nro_serie'];
     lat = json['lat'];
     long = json['long'];
     lugar = json['lugar'];
+    total = json['total'];
+    temperatura = json['Temperatura'];
   }
 
   Map<String, dynamic> toJson() {
@@ -43,6 +53,8 @@ class Dispensadores {
     data['lat'] = this.lat;
     data['long'] = this.long;
     data['lugar'] = this.lugar;
+    data['total'] = this.total;
+    data['Temperatura'] = this.temperatura;
     return data;
   }
 }
