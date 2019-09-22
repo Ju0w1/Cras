@@ -12,10 +12,12 @@ int _darkBlue = 0xFF022859;
 Reg registro;
 final _url = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=registro";
 
+String mensaje_snackReg;
+
 final GlobalKey<ScaffoldState> _scaffoldKeyPasswd = new GlobalKey<ScaffoldState>();
 _showSnackBar(){
     final snackBar = new SnackBar(
-      content: Text(mensaje_stack),
+      content: Text(mensaje_snackReg),
       duration: Duration(seconds: 3),
     );
     _scaffoldKeyPasswd.currentState.showSnackBar(snackBar);
@@ -166,15 +168,15 @@ class _Registro extends State<Registro>{
                                       (Route<dynamic> route) => false
                                   );
                                 }else{
-                                  mensaje_stack = registro.mensaje;
+                                  mensaje_snackReg = registro.mensaje;
                                   _showSnackBar();
                                 }
                               }else{
-                                mensaje_stack = "No coinciden las contraseñas";
+                                mensaje_snackReg = "No coinciden las contraseñas";
                                 _showSnackBar();
                               }
                             }else{
-                              mensaje_stack = "Fallo de Conexión";
+                              mensaje_snackReg = "Fallo de Conexión";
                               _showSnackBar();
                             }
                           },

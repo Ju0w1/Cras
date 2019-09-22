@@ -14,15 +14,6 @@ Reg registro;
 
 String mensaje_snack;
 
-final GlobalKey<ScaffoldState> _scaffoldKey= new GlobalKey<ScaffoldState>();
-_showSnackBar(){
-  final snackBar = new SnackBar(
-    content: Text(mensaje_snack),
-    duration: Duration(seconds: 3),
-  );
-  _scaffoldKey.currentState.showSnackBar(snackBar);
-}
-
 const _urlInicio ="http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=Dispensador";
 
 class AgregarDispensador extends StatefulWidget {
@@ -40,11 +31,21 @@ class AgregarDispensador extends StatefulWidget {
     maxcontroller.clear();
     mincontroller.clear();
   }
-  TextEditingController seriecontroller = TextEditingController();
-  TextEditingController capacidadcontroller = TextEditingController();
-  TextEditingController maxcontroller = TextEditingController();
-  TextEditingController mincontroller = TextEditingController();
+  final TextEditingController seriecontroller = TextEditingController();
+  final TextEditingController capacidadcontroller = TextEditingController();
+  final TextEditingController maxcontroller = TextEditingController();
+  final TextEditingController mincontroller = TextEditingController();
 class _AgregarDispensador extends State<AgregarDispensador> {
+
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  _showSnackBar(){
+    final snackBar = new SnackBar(
+      content: Text(mensaje_snack),
+      duration: Duration(seconds: 3),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar).close();
+  }
+
   @override
   Widget build(BuildContext context){
     return MaterialApp(
@@ -71,10 +72,11 @@ class _AgregarDispensador extends State<AgregarDispensador> {
             new ListTile(
                 title: Text("Mapa Dispensadores"),
                 onTap: (){
+                  Navigator.of(context).pop();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (BuildContext context) => Mapa(nombre: widget.nombre,correo: widget.correo,)
+                      builder: (BuildContext context) => new Mapa(nombre: widget.nombre,correo: widget.correo,)
                     ),
                   );
                 },
@@ -82,6 +84,7 @@ class _AgregarDispensador extends State<AgregarDispensador> {
               new ListTile(
                 title: Text("Resumen"),
                 onTap: (){
+                  Navigator.of(context).pop();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -97,7 +100,7 @@ class _AgregarDispensador extends State<AgregarDispensador> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (BuildContext context) => AgregarDispensador(nombre: widget.nombre,correo: widget.correo,)
+                      builder: (BuildContext context) => new AgregarDispensador(nombre: widget.nombre,correo: widget.correo,)
                     ),
                   );
                 },
@@ -105,6 +108,7 @@ class _AgregarDispensador extends State<AgregarDispensador> {
               new ListTile(
                 title: Text("Mantenimientos"),
                 onTap: (){
+                  Navigator.of(context).pop();
                   Navigator.push(
                     context,
                     MaterialPageRoute(

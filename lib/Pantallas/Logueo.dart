@@ -14,13 +14,15 @@ int _darkBlue = 0xFF022859;
 Inicio inicio;
 final _url = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=sesion";
 
-final GlobalKey<ScaffoldState> _scaffoldKeyPasswd = new GlobalKey<ScaffoldState>();
+String mensaje_snacklog;
+
+final GlobalKey<ScaffoldState> _scaffoldKeyLog = new GlobalKey<ScaffoldState>();
 _showSnackBar(){
-    final snackBar = new SnackBar(
-      content: Text(mensaje_stack),
-      duration: Duration(seconds: 3),
-    );
-    _scaffoldKeyPasswd.currentState.showSnackBar(snackBar);
+  final snackBar = new SnackBar(
+    content: Text(mensaje_snacklog),
+    duration: Duration(seconds: 3),
+  );
+  _scaffoldKeyLog.currentState.showSnackBar(snackBar);
 }
 
 class Login extends StatefulWidget{
@@ -35,7 +37,7 @@ class _Logueo extends State<Login>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      key: _scaffoldKeyPasswd,
+      key: _scaffoldKeyLog,
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -141,11 +143,11 @@ class _Logueo extends State<Login>{
                               (Route<dynamic> route) => false
                           );
                         }else{
-                          mensaje_stack = inicio.mensaje;
+                          mensaje_snacklog = inicio.mensaje;
                           _showSnackBar();
                         }
                       }else{
-                        mensaje_stack = "Fallo de Conexión";
+                        mensaje_snacklog = "Fallo de Conexión";
                         _showSnackBar();
                       }
                     },

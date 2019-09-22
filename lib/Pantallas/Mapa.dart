@@ -47,11 +47,21 @@ class Mapa extends StatefulWidget{
 }
 //=====================CONTROLLERS=====================\\
 class _MapaState extends State<Mapa> {
+
+  GlobalKey<ScaffoldState> _scaffoldKey= new GlobalKey<ScaffoldState>();
+  _showSnackBar(){
+    final snackBar = new SnackBar(
+      content: Text(mensaje_snack),
+      duration: Duration(seconds: 3),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
 //=====================DECLARACIÓN MAPA=====================\\
   GoogleMapController mapController;
   List <Marker> _Marcadores = [];
 //=====================MARCADORES=====================\\
-Future _getMarkers()async{
+Future<List> _getMarkers()async{
   final response = await http.get(_urlDispensadores);
   _dispensador = Dispensador.fromJson(json.decode(response.body));
   for(var i=0;i<_dispensador.dispensadores.length;i++){
@@ -92,8 +102,9 @@ Future ubicarDispensador()async{
     print(respose.statusCode);
     print(latitude.toString()+longitude.toString());
     if(ubicacion.realizado == "1"){
-      print('ubicado');
-    }else{ 
+      return mensaje_snack = ubicacion.mensaje;
+    }else{
+      return mensaje_snack = ubicacion.mensaje;
     }
   }
 }
@@ -103,10 +114,10 @@ var response = await http.get(_urlObtenerInactivos);
   if(response.statusCode == 200){
     inactivos = Inactivos.fromJson(json.decode(response.body));
     dispInactivos.clear();
-      _getDispIn();
-      for(int i = 0;i<inactivos.dispensadores.length;i++){
-        dispInactivos.add(inactivos.dispensadores[i].serie);
-      }
+    _getDispIn();
+    for(int i = 0;i<inactivos.dispensadores.length;i++){
+      dispInactivos.add(inactivos.dispensadores[i].serie);
+    }
   }
 }
 PermissionStatus _status;
@@ -129,6 +140,7 @@ final TextEditingController lugarcontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         actions: <Widget>[
         ],
@@ -154,7 +166,7 @@ final TextEditingController lugarcontroller = TextEditingController();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => Mapa(nombre: widget.nombre,correo: widget.correo,)
+                    builder: (BuildContext context) => new Mapa(nombre: widget.nombre,correo: widget.correo,)
                   ),
                 );
               },
@@ -162,6 +174,7 @@ final TextEditingController lugarcontroller = TextEditingController();
             new ListTile(
               title: Text("Resumen"),
               onTap: (){
+                Navigator.of(context).pop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -173,10 +186,11 @@ final TextEditingController lugarcontroller = TextEditingController();
             new ListTile(
               title: Text("Agregar Dispensador"),
               onTap: (){
+                Navigator.of(context).pop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => AgregarDispensador(nombre: widget.nombre,correo: widget.correo,)
+                    builder: (BuildContext context) => new AgregarDispensador(nombre: widget.nombre,correo: widget.correo,)
                   ),
                 );
               },
@@ -184,6 +198,7 @@ final TextEditingController lugarcontroller = TextEditingController();
             new ListTile(
               title: Text("Mantenimientos"),
               onTap: (){
+                Navigator.of(context).pop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -285,14 +300,7 @@ final TextEditingController lugarcontroller = TextEditingController();
                           onPressed: ()async{
                             ubicarDispensador();
                             Navigator.of(context).pop();
-                            Timer(Duration(seconds: 2), (){
-                              Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>new Mapa(nombre: widget.nombre,correo: widget.correo,)
-                                ),
-                                (Route<dynamic> route) => false,
-                              );
-                            });
+                            _showSnackBar();
                           },
                         ),
                       ],

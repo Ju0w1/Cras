@@ -266,13 +266,13 @@ class _Dispensadores extends State<PantallaDispensadores>{
                         ),
                       ),
                     );
-                  }else if(estado == 1){
+                  }else if(estado == "1"){
                     return Container(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Text("Conexión: ",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold ),),
-                          Text("En Línea",style: TextStyle(decorationColor: Colors.green,fontSize: 18,fontWeight: FontWeight.bold,color: Colors.red)),
+                          Text("En Línea",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.lightGreen)),
                         ],
                       ),
                     );
@@ -282,7 +282,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Text("Conexión: ",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold ),),
-                          Text("Sin Conexión",style: TextStyle(decorationColor: Colors.red,fontSize: 18,fontWeight: FontWeight.bold,color: Colors.red)),
+                          Text("Sin Conexión",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.red)),
                         ],
                       ),
                     );
