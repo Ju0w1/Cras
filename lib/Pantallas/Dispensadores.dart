@@ -61,7 +61,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
     return estado;
   }
   Future grafica()async{
-    var respose = await http.get("$_urlTmpReal&serie=3");
+    var respose = await http.get("$_urlTmpReal&serie=$serie");
     if(respose.statusCode == 200){
       tempReal = TempReal.fromJson(json.decode(respose.body));
       if(tempReal.realizado == "1"){
@@ -74,7 +74,6 @@ class _Dispensadores extends State<PantallaDispensadores>{
     final data = [
       new Data("Maxima",int.parse(tempMax)),
       new Data("Minima",int.parse(tempMin)),
-      new Data("Actual",int.parse(tempActual)),
     ];
     return [
       new charts.Series<Data, String>(
@@ -379,10 +378,10 @@ class _Dispensadores extends State<PantallaDispensadores>{
                 ),
                 SizedBox(height: 25,),
                 Container(
-                height: 250,
+                height: 100,
                 width:  MediaQuery.of(context).size.width,                   
                     child: FutureBuilder(
-                      future: grafica(),
+                      future: getTempActual() ,
                       builder: (BuildContext context, AsyncSnapshot snapshot){
                         if(snapshot.data == null){
                           print(snapshot.data);
@@ -392,10 +391,8 @@ class _Dispensadores extends State<PantallaDispensadores>{
                             ),
                           );
                         }else{
-                          return Container(
-                            child: charts.BarChart(snapshot.data,vertical: true,barRendererDecorator: charts.BarLabelDecorator<String>(),domainAxis: charts.OrdinalAxisSpec(renderSpec: charts.NoneRenderSpec()),),
-                          );
-                          /*return Row(
+                          
+                          return Row(
                             children: <Widget>[
                               Container(
                                 width: MediaQuery.of(context).size.width/1.5,
@@ -439,7 +436,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
                               ),
                             ],
                           );
-                        */
+                        
                         }
                       }
                     ),
@@ -461,10 +458,10 @@ class _Dispensadores extends State<PantallaDispensadores>{
                 ),
                 SizedBox(height: 25,),
                 Container(
-                height: 100,
+                height: 250,
                 width:  MediaQuery.of(context).size.width,                   
                     child: FutureBuilder(
-                      future: getTempMax(),
+                      future: grafica(),
                       builder: (BuildContext context, AsyncSnapshot snapshot){
                         if(snapshot.data == null){
                           return Center(
@@ -473,7 +470,10 @@ class _Dispensadores extends State<PantallaDispensadores>{
                             ),
                           );
                         }else{
-                          return Row(
+                          return Container(
+                            child: charts.BarChart(snapshot.data,vertical: true,barRendererDecorator: charts.BarLabelDecorator<String>(),domainAxis: charts.OrdinalAxisSpec(renderSpec: charts.NoneRenderSpec()),animate: true,animationDuration: Duration(seconds: 3),),
+                          );
+                          /*return Row(
                             children: <Widget>[
                               Container(
                                 width: MediaQuery.of(context).size.width/1.5,
@@ -502,7 +502,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
                                   alignment: Alignment.centerRight,),
                               ),
                             ],
-                          );
+                          );*/
                         }
                       }
                     ),
@@ -523,69 +523,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
                   ),
                 ),
                 SizedBox(height: 25,),
-                Container(
-                  height: 100,
-                  width:  MediaQuery.of(context).size.width,                   
-                    child: FutureBuilder(
-                      future: getTempMin(),
-                      builder: (BuildContext context, AsyncSnapshot snapshot){
-                        if(snapshot.data == null){
-                          return Center(
-                            child: CircularProgressIndicator(
-                              backgroundColor: Color(_darkBlue),
-                            ),
-                          );
-                        }else{
-                          return Row(
-                            children: <Widget>[
-                              Container(
-                                width: MediaQuery.of(context).size.width/1.5,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 25, top: 26),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text("Temperatura mínima",style: TextStyle(fontSize: 18),),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.all(2),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.centerLeft,          
-                                        child: Text("$tempMin°C",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
-                                      ),
-                                    ],
-                                  )
-                                ) 
-                              ),
-                              Container(
-                                child: Image.asset("assets/images/cold.png",
-                                  scale: 7.5,
-                                  alignment: Alignment.centerRight,),
-                              ),
-                            ],
-                          );
-                        }
-                      }
-                    ),
-                  decoration: new BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 2, // has the effect of softening the shadow
-                        spreadRadius: 0, // has the effect of extending the shadow
-                        offset: Offset(
-                          0, // horizontal, move right 10
-                          2, // vertical, move down 10
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-            ],
+              ],
           ),
         ),
       ),
