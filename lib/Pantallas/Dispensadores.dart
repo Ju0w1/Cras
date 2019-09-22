@@ -11,6 +11,7 @@ import 'SubPantallas/AgregarMantenimiento.dart';
 import 'SubPantallas/ListaMantenimiento.dart';
 import 'AgregarDispensador.dart';
 import 'Resumen.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 int _darkBlue = 0xFF022859;
 
@@ -42,7 +43,6 @@ var tiempo =1;
 var nombre;
 var estado;
 var imagen;
-
 class _Dispensadores extends State<PantallaDispensadores>{
   void initState(){
     super.initState();
@@ -59,7 +59,33 @@ class _Dispensadores extends State<PantallaDispensadores>{
       }
     }
   }
-
+  Future grafica()async{
+    var respose = await http.get("$_urlTmpReal&serie=3");
+    if(respose.statusCode == 200){
+      tempReal = TempReal.fromJson(json.decode(respose.body));
+      if(tempReal.realizado == "1"){
+        var largo = tempReal.temperatura.length;
+        tempActual = tempReal.temperatura[largo-1].prom;
+        tempMax = tempReal.temperatura[largo-1].max;
+        tempMin = tempReal.temperatura[largo-1].min;
+      }
+    }
+    final data = [
+      new Data("Maxima",int.parse(tempMax)),
+      new Data("Minima",int.parse(tempMin)),
+      new Data("Actual",int.parse(tempActual)),
+    ];
+    return [
+      new charts.Series<Data, String>(
+        id: 'Sales',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (Data sales, _) => sales.tipo,
+        measureFn: (Data sales, _) => sales.valor,
+        data: data,
+        labelAccessorFn: (Data sales,_) => '${sales.tipo} : ${sales.valor.toString()}°C'
+      )
+    ];
+  }
   Future getTempActual()async{
     var respose = await http.get("$_urlTmpReal&serie=$serie");
     if(respose.statusCode == 200){
@@ -327,19 +353,23 @@ class _Dispensadores extends State<PantallaDispensadores>{
                 ),
                 SizedBox(height: 25,),
                 Container(
-                height: 100,
+                height: 250,
                 width:  MediaQuery.of(context).size.width,                   
                     child: FutureBuilder(
-                      future: getTempActual(),
+                      future: grafica(),
                       builder: (BuildContext context, AsyncSnapshot snapshot){
                         if(snapshot.data == null){
+                          print(snapshot.data);
                           return Center(
                             child: CircularProgressIndicator(
                               backgroundColor: Color(_darkBlue),
                             ),
                           );
                         }else{
-                          return Row(
+                          return Container(
+                            child: charts.BarChart(snapshot.data,vertical: true,barRendererDecorator: charts.BarLabelDecorator<String>(),domainAxis: charts.OrdinalAxisSpec(renderSpec: charts.NoneRenderSpec()),),
+                          );
+                          /*return Row(
                             children: <Widget>[
                               Container(
                                 width: MediaQuery.of(context).size.width/1.5,
@@ -383,6 +413,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
                               ),
                             ],
                           );
+                        */
                         }
                       }
                     ),
@@ -534,4 +565,10 @@ class _Dispensadores extends State<PantallaDispensadores>{
       ),
     );
   }
+}
+
+class Data{
+  String tipo;
+  int valor;
+  Data(this.tipo,this.valor);
 }
