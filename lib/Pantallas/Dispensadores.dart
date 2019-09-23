@@ -66,7 +66,6 @@ class _Dispensadores extends State<PantallaDispensadores>{
       tempReal = TempReal.fromJson(json.decode(respose.body));
       if(tempReal.realizado == "1"){
         var largo = tempReal.temperatura.length;
-        tempActual = tempReal.temperatura[largo-1].prom;
         tempMax = tempReal.temperatura[largo-1].max;
         tempMin = tempReal.temperatura[largo-1].min;
       }
@@ -473,36 +472,6 @@ class _Dispensadores extends State<PantallaDispensadores>{
                           return Container(
                             child: charts.BarChart(snapshot.data,vertical: true,barRendererDecorator: charts.BarLabelDecorator<String>(),domainAxis: charts.OrdinalAxisSpec(renderSpec: charts.NoneRenderSpec()),animate: true,animationDuration: Duration(seconds: 3),),
                           );
-                          /*return Row(
-                            children: <Widget>[
-                              Container(
-                                width: MediaQuery.of(context).size.width/1.5,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 25, top: 26),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text("Temperatura máxima",style: TextStyle(fontSize: 18),),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.all(2),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.centerLeft,          
-                                        child: Text("$tempMax°C",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
-                                      ),
-                                    ],
-                                  )
-                                ) 
-                              ),
-                              Container(
-                                child: Image.asset("assets/images/temperature.png",
-                                  scale: 7.5,
-                                  alignment: Alignment.centerRight,),
-                              ),
-                            ],
-                          );*/
                         }
                       }
                     ),
