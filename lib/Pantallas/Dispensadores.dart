@@ -472,7 +472,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
                           return Container(
                             child: charts.BarChart(snapshot.data,vertical: true,barRendererDecorator: charts.BarLabelDecorator<String>(),domainAxis: charts.OrdinalAxisSpec(renderSpec: charts.NoneRenderSpec()),animate: true,animationDuration: Duration(seconds: 3),),
                           );
-                        }
+                         }
                       }
                     ),
                   decoration: new BoxDecoration(
