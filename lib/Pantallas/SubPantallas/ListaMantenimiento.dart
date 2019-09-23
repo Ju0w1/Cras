@@ -41,7 +41,8 @@ class _ListaMantenimiento extends State<ListaMantenimiento>{
       }
     }else{
 
-    } 
+    }
+    return lista;
   }
 
   @override
@@ -57,7 +58,22 @@ class _ListaMantenimiento extends State<ListaMantenimiento>{
         centerTitle: true,
         backgroundColor: Color(_darkBlue),
       ),
-      body: _buildListView(lista),
+      body: FutureBuilder(
+        future: getList(),
+        builder: (BuildContext context, AsyncSnapshot snapshot){
+          if(snapshot.data == null){
+            return Container(
+              child: Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Color(_darkBlue),
+                ),
+              ),
+            );
+          }else{
+            return _buildListView(lista);
+          }
+        },
+      ),
     );
   }
   Widget _buildListView(ListaMant mant){
