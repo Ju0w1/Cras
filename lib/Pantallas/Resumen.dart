@@ -37,12 +37,14 @@ class _Resumen extends State<Resumen>{
         datos.add(new Rec(DateTime.parse(_grafRec.recau[i].fecha), int.parse(_grafRec.recau[i].recaudado), Colors.black));
       }
     }
-    return [charts.Series(
+    return [charts.Series<Rec,DateTime>(
         data: datos,
         domainFn: (Rec rec,_)=> rec.fecha,
         measureFn: (Rec rec,_)=> rec.racaudado,
         id: 'Recaudado',
-      )];
+         keyFn: (Rec rec,_)=> "${rec.racaudado.toString()}"
+      )
+    ];
   }
   Future _getRecTot() async{
     var respose = await http.get("${_urlRecReal}");
@@ -225,7 +227,7 @@ class _Resumen extends State<Resumen>{
                       );
                    }else{
                      return Container(
-                       child: charts.TimeSeriesChart(snapshot.data,animate: true,animationDuration: Duration(seconds: 5),),
+                       child: charts.TimeSeriesChart(snapshot.data,animate: true,animationDuration: Duration(seconds: 2),behaviors: [charts.ChartTitle('Prueba de titulo',behaviorPosition:charts.BehaviorPosition.top,)],),
                      );
                    }
                  },
