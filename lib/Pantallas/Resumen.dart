@@ -227,7 +227,15 @@ class _Resumen extends State<Resumen>{
                       );
                    }else{
                      return Container(
-                       child: charts.TimeSeriesChart(snapshot.data,animate: true,animationDuration: Duration(seconds: 2),behaviors: [charts.ChartTitle('Prueba de titulo',behaviorPosition:charts.BehaviorPosition.top,)],),
+                      child: charts.TimeSeriesChart(
+                        snapshot.data,animate: true,
+                        animationDuration: Duration(seconds: 2),
+                        behaviors: [charts.ChartTitle(
+                          'Producción Económica',
+                          titleStyleSpec: charts.TextStyleSpec(fontSize: 16),
+                          behaviorPosition:charts.BehaviorPosition.top,
+                        )],
+                      ),
                      );
                    }
                  },

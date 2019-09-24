@@ -82,6 +82,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
       new charts.Series<Data, String>(
         id: 'Sales',
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        displayName: "Temperatúra Máxima y Mínima",
         domainFn: (Data sales, _) => sales.tipo,
         measureFn: (Data sales, _) => sales.valor,
         data: data,
@@ -448,7 +449,6 @@ class _Dispensadores extends State<PantallaDispensadores>{
                             ),
                           );
                         }else{
-                          
                           return Row(
                             children: <Widget>[
                               Container(
@@ -493,7 +493,6 @@ class _Dispensadores extends State<PantallaDispensadores>{
                               ),
                             ],
                           );
-                        
                         }
                       }
                     ),
@@ -528,7 +527,22 @@ class _Dispensadores extends State<PantallaDispensadores>{
                           );
                         }else{
                           return Container(
-                            child: charts.BarChart(snapshot.data,vertical: true,barRendererDecorator: charts.BarLabelDecorator<String>(),domainAxis: charts.OrdinalAxisSpec(renderSpec: charts.NoneRenderSpec()),animate: true,animationDuration: Duration(seconds: 3),),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: charts.BarChart(
+                                snapshot.data,vertical: true,
+                                barRendererDecorator: charts.BarLabelDecorator<String>(
+                                ),
+                                domainAxis: charts.OrdinalAxisSpec(
+                                  renderSpec: charts.NoneRenderSpec()
+                                ),
+                                animate: true,
+                                animationDuration: Duration(seconds: 2),
+                                behaviors: [
+                                  charts.ChartTitle("Temperatura Máxima y Mínima",titleStyleSpec: charts.TextStyleSpec(fontSize: 12,)),
+                                ],
+                              ),
+                            ),
                           );
                          }
                       }
