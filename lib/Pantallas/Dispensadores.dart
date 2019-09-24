@@ -43,6 +43,7 @@ var tiempo =1;
 var nombre;
 var estado;
 var imagen;
+
 class _Dispensadores extends State<PantallaDispensadores>{
   void initState(){
     super.initState();
@@ -435,7 +436,6 @@ class _Dispensadores extends State<PantallaDispensadores>{
                               ),
                             ],
                           );
-                        
                         }
                       }
                     ),
@@ -514,7 +514,6 @@ class _Dispensadores extends State<PantallaDispensadores>{
     );
   }
 }
-
 class Data{
   String tipo;
   int valor;
