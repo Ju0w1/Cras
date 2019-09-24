@@ -7,6 +7,7 @@ import 'package:cras/Pantallas/Mapa.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../Modelo/graficaRec.dart';
 import 'SubPantallas/AgregarMantenimiento.dart';
 import 'SubPantallas/ListaMantenimiento.dart';
 import 'AgregarDispensador.dart';
@@ -17,10 +18,12 @@ int _darkBlue = 0xFF022859;
 
 TempReal tempReal;
 RecReal recReal;
+GraficaRec recgraficareal;
 Conexion conexion;
 
 const _urlTmpReal ="http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=temp_rel";
 const _urlRecReal ="http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=recrel";
+const _urlRecGrafReal ="http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=recgraf";
 const _urlConexion ="http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=obtener_estado";
 
 class PantallaDispensadores extends StatefulWidget{
@@ -43,6 +46,7 @@ var tiempo =1;
 var nombre;
 var estado;
 var imagen;
+List<Rec> recgraf = [];
 class _Dispensadores extends State<PantallaDispensadores>{
   void initState(){
     super.initState();
@@ -82,6 +86,27 @@ class _Dispensadores extends State<PantallaDispensadores>{
         measureFn: (Data sales, _) => sales.valor,
         data: data,
         labelAccessorFn: (Data sales,_) => '${sales.tipo} : ${sales.valor.toString()}°C'
+      )
+    ];
+  }
+  Future graficaRec() async{
+    recgraf.clear();
+    var respose = await http.get("$_urlRecGrafReal&serie=$serie");  
+    if(respose.statusCode == 200){
+      recgraficareal = GraficaRec.fromJson(json.decode(respose.body));
+      if(recgraficareal.realizado == "1"){
+        for(int i = 0; i < recgraficareal.total.length; i++){
+          recgraf.add(new Rec(DateTime.parse(recgraficareal.total[i].fecha),int.parse(recgraficareal.total[i].recaudado)));
+        }
+      }
+    }
+    return [
+      charts.Series<Rec,DateTime>(
+        data: recgraf,
+        domainFn: (Rec rec,_)=>rec.fecha,
+        measureFn: (Rec rec,_)=>rec.valor,
+        id: 'Recaudado',
+        colorFn: (_,__)=>charts.MaterialPalette.blue.shadeDefault
       )
     ];
   }
@@ -375,6 +400,39 @@ class _Dispensadores extends State<PantallaDispensadores>{
                     ],
                   ),
                 ),
+              SizedBox(height: 25,),
+              Container(
+                  height: 100,
+                  child: FutureBuilder(
+                    future: graficaRec(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot){
+                      if(snapshot.data == null){
+                        return Center(
+                          child: CircularProgressIndicator(
+                            backgroundColor: Color(_darkBlue),
+                          ),
+                        );
+                      }else{
+                        return charts.TimeSeriesChart(snapshot.data,animate: true,animationDuration: Duration(seconds: 3));
+                      }
+                    },
+                  ),
+                  decoration: new BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black,
+                        blurRadius: 2, // has the effect of softening the shadow
+                        spreadRadius: 0, // has the effect of extending the shadow
+                        offset: Offset(
+                          0, // horizontal, move right 10
+                          2, // vertical, move down 10
+                        ),
+                      )
+                    ],
+                  ),
+                ),
                 SizedBox(height: 25,),
                 Container(
                 height: 100,
@@ -498,6 +556,12 @@ class _Dispensadores extends State<PantallaDispensadores>{
       ),
     );
   }
+}
+
+class Rec{
+  DateTime fecha;
+  int valor;
+  Rec(this.fecha,this.valor);
 }
 
 class Data{
