@@ -114,6 +114,7 @@ var response = await http.get(_urlObtenerInactivos);
       dispInactivos.add(inactivos.dispensadores[i].serie);
     }
   }
+  return dispInactivos;
 }
 PermissionStatus _status;
 var geolocator = Geolocator();
