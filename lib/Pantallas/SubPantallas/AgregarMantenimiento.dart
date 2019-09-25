@@ -31,19 +31,53 @@ class _AgregarMantenimiento extends State<AgregarMantenimiento>{
         title: Text("Agregar Mantenimiento"),
         backgroundColor: Color(_darkBlue),
       ),
-      body: ListView(
-        children: values.keys.map((String key) {
-          return new CheckboxListTile(
-            title: new Text(key),
-            value: values[key],
-            onChanged: (bool value) {
-              setState(() {
-                values[key] = value;
-              });
-            },
-          );
-        }).toList(),
-      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height/1.5,
+              width: MediaQuery.of(context).size.width,
+              child: ListView(
+                children: values.keys.map((String key) {
+                  return new CheckboxListTile(
+                    title: new Text(key),
+                    value: values[key],
+                    onChanged: (bool value) {
+                      setState(() {
+                        values[key] = value;
+                      });
+                    },
+                  );
+                },).toList(),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            InkWell(
+              child: Container(
+                width: MediaQuery.of(context).size.width/2,
+                height: 40,
+                decoration: new BoxDecoration(
+                  color: Color(_darkBlue),
+                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                ),
+                child: Center(
+                  child: Text(
+                    'Agregar'.toUpperCase(),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+              onTap: () {},
+            ),
+          ],
+        )
+      )
     );
   }
 }

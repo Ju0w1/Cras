@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:cras/Modelo/Inicio.dart';
 import 'package:cras/Pantallas/RecuperarContra.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Mapa.dart';
@@ -13,6 +14,9 @@ import 'PantallaCarga.dart';
 int _darkBlue = 0xFF022859;
 Inicio inicio;
 final _url = "http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=sesion";
+
+FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+String tokencito;
 
 String mensaje_snacklog;
 
@@ -32,6 +36,19 @@ class Login extends StatefulWidget{
 
 //=====================PANTALLA=====================\\
 class _Logueo extends State<Login>{
+  @override
+  void initState() {
+    super.initState();
+    setupNotification();
+  }
+
+  void setupNotification()async{
+    _firebaseMessaging.getToken().then((token){
+      tokencito = token;
+      print(tokencito);
+    });
+  }
+
   final TextEditingController correocontroller = TextEditingController();
   final TextEditingController clavecontroller = TextEditingController();
   @override
@@ -133,7 +150,7 @@ class _Logueo extends State<Login>{
                     ),
                     onTap: () async {
 //=====================COMUNICACIÓN WEB-SERVICE=====================\\
-                      final response = await http.get("$_url&correo=${correocontroller.text}&clave=${clavecontroller.text}");
+                      final response = await http.get("$_url&correo=${correocontroller.text}&clave=${clavecontroller.text}&token=${tokencito}");
                       if(response.statusCode == 200){
                         inicio = Inicio.fromJson(json.decode(response.body));
                         if(inicio.realizado=="1"){

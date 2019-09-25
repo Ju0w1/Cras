@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1000295459165",
+    "firebase_url": "https://crasapp-f0c23.firebaseio.com",
+    "project_id": "crasapp-f0c23",
+    "storage_bucket": "crasapp-f0c23.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000295459165:android:5dad211a72cad159b120b4",
+        "android_client_info": {
+          "package_name": "com.example.cras"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1000295459165-gmu258la1mru08vo1bjk9ml0q56fent5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6c-XS4OLokr2pyVjOn-eZGaIYwYGPPi4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1000295459165-gmu258la1mru08vo1bjk9ml0q56fent5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
