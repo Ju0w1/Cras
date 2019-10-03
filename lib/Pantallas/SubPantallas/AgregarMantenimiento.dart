@@ -6,7 +6,8 @@ import 'package:cras/Modelo/agregar_mantenimiento.dart';
 import 'package:flutter/material.dart';
 
 class AgregarMantenimiento extends StatefulWidget{
-
+  var nro_serie;
+  AgregarMantenimiento({Key key, @required this.nro_serie}) : super (key : key);
   @override
   _AgregarMantenimiento createState() =>  _AgregarMantenimiento();
 }
@@ -164,7 +165,7 @@ class _AgregarMantenimiento extends State<AgregarMantenimiento>{
                     ),
                   ),
                   onTap: () async{
-                    final response = await http.get("http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=mantenimiento&serie=3&comentario=${_nombres.toString()+", "+comentariocontroller.text}");
+                    final response = await http.get("http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=mantenimiento&serie=${widget.nro_serie}&comentario=${_nombres.toString()+", "+comentariocontroller.text}");
                     if (response.statusCode == 200){
                       addMantenimiento = AddMantenimiento.fromJson(json.decode(response.body));
                       if(addMantenimiento.realizado == "1"){
@@ -174,7 +175,7 @@ class _AgregarMantenimiento extends State<AgregarMantenimiento>{
                         ));
                         Timer(Duration(seconds: 3), (){
                           Navigator.pop(context);
-                          });
+                        });
                       }else{
                         Scaffold.of(context).showSnackBar(SnackBar(
                           content: Text(addMantenimiento.mensaje),

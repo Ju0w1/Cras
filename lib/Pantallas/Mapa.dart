@@ -9,7 +9,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:cras/Modelo/ubicacion.dart';
 import 'package:geolocator/geolocator.dart';
 import 'AgregarDispensador.dart';
-import 'Mantenimiento.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -191,51 +190,39 @@ final TextEditingController lugarcontroller = TextEditingController();
                 );
               },
             ),
-            new ListTile(
-              title: Text("Mantenimientos"),
-              onTap: (){
-                Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => Mantenimiento(nombre: widget.nombre,correo: widget.correo,)
-                  ),
-                );
-              },
-            ),
         ],
       ),
     ),
   body: Container(
-    height: MediaQuery.of(context).size.height,
-    width: MediaQuery.of(context).size.width,
-    child: FutureBuilder(
-      future: _getMarkers(),
-      builder: (BuildContext context, AsyncSnapshot snapshot){
-        if(snapshot.data == null){
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            home: Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Color(_darkBlue),
-              ),
-            ),
-          );
-        }else{
-          return GoogleMap(
-            markers: Set.from(_Marcadores),
-            initialCameraPosition: CameraPosition(
-              target: LatLng(-32.701760, -57.638912),
-              zoom: 7.5
-            ),
-            onMapCreated: (GoogleMapController controller) {
-            mapController = controller;
-            },
-          );
-        }
-      },
-    ),
-  ),
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: FutureBuilder(
+          future: _getMarkers(),
+          builder: (BuildContext context, AsyncSnapshot snapshot){
+            if(snapshot.data == null){
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                home: Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Color(_darkBlue),
+                  ),
+                ),
+              );
+            }else{
+              return GoogleMap(
+                markers: Set.from(_Marcadores),
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(-32.701760, -57.638912),
+                  zoom: 7.5
+                ),
+                onMapCreated: (GoogleMapController controller) {
+                mapController = controller;
+                },
+              );
+            }
+          },
+        ),
+      ),
   floatingActionButton: Align(
     alignment: Alignment.bottomLeft,
       child: Container(
@@ -294,9 +281,29 @@ final TextEditingController lugarcontroller = TextEditingController();
                           iconSize: 90,
                           icon: Icon (Icons.location_on,color: Colors.redAccent,size: 70,),
                           onPressed: ()async{
-                            ubicarDispensador();
-                            Navigator.of(context).pop();
-                            _showSnackBar();
+                            position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+                            latitude = position.latitude;
+                            longitude = position.longitude;
+                            var respose = await http.get("$_url_add_ubicacion&serie=$valor&lat=${latitude.toString()}&long=${longitude.toString()}&lugar=${lugarcontroller.text}");
+                            if(respose.statusCode == 200){
+                              ubicacion = AddUbicacion.fromJson(json.decode(respose.body));
+                              print(respose.statusCode);
+                              print(latitude.toString()+longitude.toString());
+                              if(ubicacion.realizado == "1"){
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) => new Mapa(nombre: widget.nombre,correo: widget.correo,)
+                                  ),
+                                );
+                              }else{
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text(ubicacion.mensaje),
+                                ));
+                              }
+                            }
                           },
                         ),
                       ],

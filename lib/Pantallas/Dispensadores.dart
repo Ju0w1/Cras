@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'package:cras/Modelo/Estado.dart';
 import 'package:cras/Modelo/agregar_mantenimiento.dart';
 import 'package:cras/Modelo/rec_real.dart';
+import 'package:cras/Modelo/remover_disp.dart';
+import 'package:cras/Modelo/retiro.dart';
 import 'package:cras/Modelo/temp_real.dart';
-import 'package:cras/Pantallas/Mantenimiento.dart';
 import 'package:cras/Pantallas/Mapa.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'SubPantallas/ListaMantenimiento.dart';
 import 'AgregarDispensador.dart';
 import 'Resumen.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'dart:async';
 
 int _darkBlue = 0xFF022859;
 
@@ -21,6 +23,8 @@ TempReal tempReal;
 RecReal recReal;
 GraficaRec recgraficareal;
 Conexion conexion;
+Remover remover;
+Retiro retiro;
 
 const _urlTmpReal ="http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=temp_rel";
 const _urlRecReal ="http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=recrel";
@@ -188,7 +192,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
             alignment: MainAxisAlignment.end,
             children: <Widget>[
               InkWell(
-                child: Icon(Icons.note_add),
+                child: Icon(Icons.settings),
                 onTap: (){
                   showDialog(
                     context: context,
@@ -219,17 +223,45 @@ class _Dispensadores extends State<PantallaDispensadores>{
                                   Text("Agregar Mantenimiento",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),)
                                 ],
                               ),
-                              onTap:() => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> AgregarMantenimiento())),
-                            )
+                              onTap:() => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> AgregarMantenimiento(nro_serie: widget.nroSerie,))),
+                            ),
+                            SizedBox(height: 15,),
+                            GestureDetector(
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.location_off),
+                                  SizedBox(width: 15),
+                                  Text(
+                                    "Remover ubicación",
+                                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                                  ),
+                                ],
+                              ),
+                              onTap: ()async{
+                                final response = await http.get("http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=baja&serie=${widget.nroSerie}");
+                                if (response.statusCode == 200){
+                                  remover = Remover.fromJson(json.decode(response.body));
+                                  if(remover.realizado == "1"){
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Mapa(nombre: widget.nombreUsuario,correo: widget.correoUsuario,)), (Route<dynamic> route) => false);
+                                  }else{
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                      content: Text(remover.mensaje),
+                                    ));
+                                  }
+                                }
+                              },
+                            ),
                           ],
                         ),
                       ),
                       actions: <Widget>[
                         new FlatButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: new Text("OK"))
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: new Text("OK")
+                        )
                       ],
                     )
                   );
@@ -286,17 +318,6 @@ class _Dispensadores extends State<PantallaDispensadores>{
                   );
                 },
               ),
-              new ListTile(
-                title: Text("Mantenimientos"),
-                onTap: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Mantenimiento(nombre: widget.nombreUsuario,correo: widget.correoUsuario,)
-                    ),
-                  );
-                },
-              )
           ],
         ),
       ),
@@ -323,6 +344,25 @@ class _Dispensadores extends State<PantallaDispensadores>{
                         children: <Widget>[
                           Text("Conexión: ",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold ),),
                           Text("En Línea",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.lightGreen)),
+                          Text("Retirar", style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
+                          InkWell(
+                            child: Text("Retirar", style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
+                            onTap: ()async{
+                              final response = await http.get("https://www.cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=retiro&correo=${widget.correoUsuario}&serie=${widget.nroSerie}");
+                              if (response.statusCode == 200){
+                                retiro = Retiro.fromJson(json.decode(response.body));
+                                if(retiro.realizado == "1"){
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text(retiro.mensaje),
+                                  ));
+                                }else{
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text(retiro.mensaje),
+                                  ));
+                                }
+                              }
+                            },
+                          )
                         ],
                       ),
                     );

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:cras/Pantallas/Mantenimiento.dart';
 import 'package:cras/Pantallas/Mapa.dart';
 import 'package:http/http.dart' as http;
 import 'package:cras/Modelo/recTotal.dart';
@@ -108,17 +107,6 @@ class _Resumen extends State<Resumen>{
                 context,
                 MaterialPageRoute(
                   builder: (BuildContext context) => AgregarDispensador(nombre: widget.nombre,correo: widget.correo,)
-                ),
-              );
-            },
-          ),
-          new ListTile(
-            title: Text("Mantenimientos"),
-            onTap: (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => Mantenimiento(nombre: widget.nombre,correo: widget.correo,)
                 ),
               );
             },

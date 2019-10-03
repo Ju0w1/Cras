@@ -4,8 +4,6 @@ import 'package:cras/Modelo/Registro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'dart:ui';
-
-import 'Mantenimiento.dart';
 import 'Mapa.dart';
 import 'Resumen.dart';
 
@@ -101,18 +99,6 @@ class _AgregarDispensador extends State<AgregarDispensador> {
                     context,
                     MaterialPageRoute(
                       builder: (BuildContext context) => new AgregarDispensador(nombre: widget.nombre,correo: widget.correo,)
-                    ),
-                  );
-                },
-              ),
-              new ListTile(
-                title: Text("Mantenimientos"),
-                onTap: (){
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Mantenimiento(nombre: widget.nombre,correo: widget.correo,)
                     ),
                   );
                 },
