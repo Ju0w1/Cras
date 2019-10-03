@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:cras/Modelo/Estado.dart';
+import 'package:cras/Modelo/agregar_mantenimiento.dart';
 import 'package:cras/Modelo/rec_real.dart';
 import 'package:cras/Modelo/temp_real.dart';
 import 'package:cras/Pantallas/Mantenimiento.dart';
@@ -414,7 +415,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
                           ),
                         );
                       }else{
-                        return charts.TimeSeriesChart(snapshot.data,animate: true,animationDuration: Duration(seconds: 3));
+                        return charts.TimeSeriesChart(snapshot.data,animate: true,animationDuration: Duration(seconds: 1));
                       }
                     },
                   ),

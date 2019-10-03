@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:cras/Pantallas/AgregarDispensador.dart';
 import 'package:http/http.dart' as http;
 import 'package:cras/Modelo/agregar_mantenimiento.dart';
 import 'package:flutter/material.dart';
@@ -14,14 +16,6 @@ AddMantenimiento addMantenimiento;
 
  String mensaje_snackAddMant;
 
-  GlobalKey<ScaffoldState> _scaffoldKeyAgregarMant = new GlobalKey<ScaffoldState>();
-  _showSnackBar(){
-    final snackBar = new SnackBar(
-      content: Text(mensaje_snackAddMant),
-      duration: Duration(seconds: 3),
-    );
-    _scaffoldKeyAgregarMant.currentState.showSnackBar(snackBar).close();
-  }
 
 class _AgregarMantenimiento extends State<AgregarMantenimiento>{
 
@@ -87,114 +81,127 @@ class _AgregarMantenimiento extends State<AgregarMantenimiento>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      key: _scaffoldKeyAgregarMant,
       appBar: AppBar(
         centerTitle: true,
         title: Text("Agregar Mantenimiento"),
         backgroundColor: Color(_darkBlue),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height/1.5,
-              width: MediaQuery.of(context).size.width,
-              child: ListView.builder(
-                itemCount: _categories['responseTotalResult'],
-                itemBuilder: (BuildContext context, int index) {
-                  return CheckboxListTile(
-                    value: _selecteCategorys.contains(_categories['responseBody'][index]['category_id']),
-                    onChanged: (bool selected) {
-                      _onCategorySelected(selected,_categories['responseBody'][index]['category_id']);
-                      _selectedNombres(selected,_categories['responseBody'][index]['category_name']);
-                    },
-                    title: Text(_categories['responseBody'][index]['category_name']),
-                  );
-                }
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            FutureBuilder(
-              future: otro(),
-              builder: (BuildContext context, AsyncSnapshot snapshot){
-                if (snapshot.hasData){
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 25,right: 25,),
-                    child: Container(
-                      child: TextField(
-                        controller: comentariocontroller,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          labelStyle: TextStyle(color: Colors.grey),
-                          prefixIcon: Icon(Icons.add_comment,color: Color(_darkBlue),),
-                          labelText: 'Comentario',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(8))
+      body: Builder(
+        builder: (BuildContext context){
+          return SingleChildScrollView(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.height/1.5,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                    itemCount: _categories['responseTotalResult'],
+                    itemBuilder: (BuildContext context, int index) {
+                      return CheckboxListTile(
+                        value: _selecteCategorys.contains(_categories['responseBody'][index]['category_id']),
+                        onChanged: (bool selected) {
+                          _onCategorySelected(selected,_categories['responseBody'][index]['category_id']);
+                          _selectedNombres(selected,_categories['responseBody'][index]['category_name']);
+                        },
+                        title: Text(_categories['responseBody'][index]['category_name']),
+                      );
+                    }
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                FutureBuilder(
+                  future: otro(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot){
+                    if (snapshot.hasData){
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 25,right: 25,),
+                        child: Container(
+                          child: TextField(
+                            controller: comentariocontroller,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              labelStyle: TextStyle(color: Colors.grey),
+                              prefixIcon: Icon(Icons.add_comment,color: Color(_darkBlue),),
+                              labelText: 'Comentario',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(8))
+                              ),
+                            ),
                           ),
+                        ),
+                      );
+                    }else {
+                      return SizedBox(
+                        height: 10,
+                      );
+                    }
+                  },
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                InkWell(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width/2,
+                    height: 40,
+                    decoration: new BoxDecoration(
+                      color: Color(_darkBlue),
+                      borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Agregar'.toUpperCase(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
                         ),
                       ),
                     ),
-                  );
-                }else {
-                  return SizedBox(
-                    height: 10,
-                  );
-                }
-              },
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            InkWell(
-              child: Container(
-                width: MediaQuery.of(context).size.width/2,
-                height: 40,
-                decoration: new BoxDecoration(
-                  color: Color(_darkBlue),
-                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                ),
-                child: Center(
-                  child: Text(
-                    'Agregar'.toUpperCase(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
                   ),
+                  onTap: () async{
+                    final response = await http.get("http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=mantenimiento&serie=3&comentario=${_nombres.toString()+", "+comentariocontroller.text}");
+                    if (response.statusCode == 200){
+                      addMantenimiento = AddMantenimiento.fromJson(json.decode(response.body));
+                      if(addMantenimiento.realizado == "1"){
+                        comentariocontroller.clear();
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text(addMantenimiento.mensaje),
+                        ));
+                        Timer(Duration(seconds: 3), (){
+                          Navigator.pop(context);
+                          });
+                      }else{
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text(addMantenimiento.mensaje),
+                        ));
+                        Timer(Duration(seconds: 3), (){
+                          Navigator.pop(context);
+                          });
+                      }
+                    }else{
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text("Fallo de conexión"),
+                      ));
+                      Timer(Duration(seconds: 3), (){
+                          Navigator.pop(context);
+                          });
+                    }
+                  },
                 ),
-              ),
-              onTap: () async{
-                 final response = await http.get("http://cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=mantenimiento&serie=3&comentario=${_nombres.toString()+", "+comentariocontroller.text}");
-                 if (response.statusCode == 200){
-                   addMantenimiento = AddMantenimiento.fromJson(json.decode(response.body));
-                   if(addMantenimiento.realizado == "1"){
-                     comentariocontroller.clear();
-                     mensaje_snackAddMant = addMantenimiento.mensaje;
-                     _showSnackBar();
-                   }else{
-                     mensaje_snackAddMant = addMantenimiento.mensaje;
-                     _showSnackBar();
-                   }
-                 }else{
-                  mensaje_snackAddMant == "Fallo de conexión";
-                  _showSnackBar();
-                 }
-              },
-            ),
-            /*SizedBox(
-              height: 15,
-            )*/
-          ],
-        )
+              ],
+            )
+          );
+        }
       )
     );
   }
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

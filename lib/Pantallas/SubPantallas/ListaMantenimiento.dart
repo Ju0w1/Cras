@@ -92,13 +92,16 @@ class _ListaMantenimiento extends State<ListaMantenimiento>{
   Widget buildMantListItem(Mantenimineto item){
     return Card(
       child: Container(
-        padding: EdgeInsets.only(bottom: 4.0,left: 4.0,right: 4.0),
+        padding: EdgeInsets.all(8),
         child: Column(
           children: <Widget>[
             Row(
               children: <Widget>[
                 Text(
-                  item.nroSerie + " " + item.lugar
+                  "Dispensador nro: "+item.nroSerie + ", " + item.lugar,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold
+                  ),
                 ),
                 SizedBox(width: 10,),
                 Text(
@@ -107,13 +110,12 @@ class _ListaMantenimiento extends State<ListaMantenimiento>{
               ],
             ),
             SizedBox(height: 20),
-            Row(
-              children: <Widget>[
-                Text(
-                  item.comentario
-                )
-              ],
-            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                item.comentario,
+              ),
+            )
           ],
         ),
       ),
