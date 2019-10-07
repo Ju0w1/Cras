@@ -321,169 +321,55 @@ class _Dispensadores extends State<PantallaDispensadores>{
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(15),
-          child: Column(
-            children: <Widget>[
-              FutureBuilder(
-                future: getConexion(),
-                builder: (BuildContext context, AsyncSnapshot snapshot){
-                  if(snapshot.data == null){
-                    return Container(
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          backgroundColor: Color(_darkBlue),
-                        ),
-                      ),
-                    );
-                  }else if(estado == "1"){
-                    return Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text("Conexión: ",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold ),),
-                          Text("En Línea",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.lightGreen)),
-                          Text("Retirar", style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
-                          InkWell(
-                            child: Text("Retirar", style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
-                            onTap: ()async{
-                              final response = await http.get("https://www.cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=retiro&correo=${widget.correoUsuario}&serie=${widget.nroSerie}");
-                              if (response.statusCode == 200){
-                                retiro = Retiro.fromJson(json.decode(response.body));
-                                if(retiro.realizado == "1"){
-                                  Scaffold.of(context).showSnackBar(SnackBar(
-                                    content: Text(retiro.mensaje),
-                                  ));
-                                }else{
-                                  Scaffold.of(context).showSnackBar(SnackBar(
-                                    content: Text(retiro.mensaje),
-                                  ));
-                                }
-                              }
-                            },
-                          )
-                        ],
-                      ),
-                    );
-                  }else {
-                    return Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text("Conexión: ",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold ),),
-                          Text("Sin Conexión",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.red)),
-                        ],
-                      ),
-                    );
-                  }
-                },
-              ),
-              SizedBox(height: 10,),
-              Container(
-                height: 100,
-                width:  MediaQuery.of(context).size.width,                   
-                child: FutureBuilder(
-                  future: getRec(),
-                  builder: (BuildContext context,AsyncSnapshot snapshot){
-                    if(snapshot.data == null){
-                      return Center(
-                        child: CircularProgressIndicator(
-                          backgroundColor: Color(_darkBlue),
-                        ),
-                      );
-                    }else{
-                      return Row(
-                        children: <Widget>[
-                          Container(
-                            width: MediaQuery.of(context).size.width/1.5,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 25, top: 26),
-                              child: Column(
-                                children: <Widget>[
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text("Recaudación actual:",style: TextStyle(fontSize: 18,),),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(2),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text("\$"+"$recActual",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
-                                  ),
-                                ],
-                              )
-                            ) 
-                          ),
-                          Container(
-                            child: Image.asset("assets/images/coins.png",
-                              scale: 7.5,
-                              alignment: Alignment.centerRight,),
-                          ),
-                        ],
-                      );
-                    }
-                  },
-                ),
-                  decoration: new BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 2, // has the effect of softening the shadow
-                        spreadRadius: 0, // has the effect of extending the shadow
-                        offset: Offset(
-                          0, // horizontal, move right 10
-                          2, // vertical, move down 10
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              SizedBox(height: 25,),
-              Container(
-                  height: 100,
-                  child: FutureBuilder(
-                    future: graficaRec(),
+      body: Builder(
+        builder: (BuildContext context){
+          return SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(15),
+              child: Column(
+                children: <Widget>[
+                  FutureBuilder(
+                    future: getConexion(),
                     builder: (BuildContext context, AsyncSnapshot snapshot){
                       if(snapshot.data == null){
-                        return Center(
-                          child: CircularProgressIndicator(
-                            backgroundColor: Color(_darkBlue),
+                        return Container(
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              backgroundColor: Color(_darkBlue),
+                            ),
                           ),
                         );
-                      }else{
-                        return charts.TimeSeriesChart(snapshot.data,animate: true,animationDuration: Duration(seconds: 1));
+                      }else if(estado == "1"){
+                        return Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text("Conexión: ",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold ),),
+                              Text("En Línea",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.lightGreen)),
+                            ],
+                          ),
+                        );
+                      }else {
+                        return Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text("Conexión: ",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold ),),
+                              Text("Sin Conexión",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.red)),
+                            ],
+                          ),
+                        );
                       }
                     },
                   ),
-                  decoration: new BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 2, // has the effect of softening the shadow
-                        spreadRadius: 0, // has the effect of extending the shadow
-                        offset: Offset(
-                          0, // horizontal, move right 10
-                          2, // vertical, move down 10
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 25,),
-                Container(
-                height: 100,
-                width:  MediaQuery.of(context).size.width,                   
+                  SizedBox(height: 10,),
+                  Container(
+                    height: 100,
+                    width:  MediaQuery.of(context).size.width,                   
                     child: FutureBuilder(
-                      future: getTempActual() ,
-                      builder: (BuildContext context, AsyncSnapshot snapshot){
+                      future: getRec(),
+                      builder: (BuildContext context,AsyncSnapshot snapshot){
                         if(snapshot.data == null){
-                          print(snapshot.data);
                           return Center(
                             child: CircularProgressIndicator(
                               backgroundColor: Color(_darkBlue),
@@ -500,114 +386,249 @@ class _Dispensadores extends State<PantallaDispensadores>{
                                     children: <Widget>[
                                       Align(
                                         alignment: Alignment.centerLeft,
-                                        child: Text("Temperatura actual",style: TextStyle(fontSize: 18),),
+                                        child: Text("Recaudación actual:",style: TextStyle(fontSize: 18,),),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.all(2),
                                       ),
                                       Align(
-                                        alignment: Alignment.centerLeft,          
-                                        child: Text("$tempActual°C",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
+                                        alignment: Alignment.centerLeft,
+                                        child: Text("\$"+"$recActual",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
                                       ),
                                     ],
                                   )
                                 ) 
                               ),
                               Container(
-                                child: FutureBuilder(
-                                  future: getTempImagen(),
-                                  builder: (BuildContext context, AsyncSnapshot snapshot){
-                                    if(snapshot.data == null){
-                                      return  Center(
-                                          child:  CircularProgressIndicator(
-                                          backgroundColor: Color(_darkBlue),
-                                        ),
-                                      );
-                                    }else{
-                                      return Image.asset(imagen,
-                                        scale: 7.5,
-                                        alignment: Alignment.centerRight,
-                                      );
-                                    }
-                                  }
-                                )
+                                child: Image.asset("assets/images/coins.png",
+                                  scale: 7.5,
+                                  alignment: Alignment.centerRight,),
                               ),
                             ],
                           );
                         }
-                      }
+                      },
                     ),
-                  decoration: new BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 2, // has the effect of softening the shadow
-                        spreadRadius: 0, // has the effect of extending the shadow
-                        offset: Offset(
-                          0, // horizontal, move right 10
-                          2, // vertical, move down 10
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 25,),
-                Container(
-                height: 250,
-                width:  MediaQuery.of(context).size.width,                   
-                    child: FutureBuilder(
-                      future: grafica(),
-                      builder: (BuildContext context, AsyncSnapshot snapshot){
-                        if(snapshot.data == null){
-                          return Center(
-                            child: CircularProgressIndicator(
-                              backgroundColor: Color(_darkBlue),
+                      decoration: new BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 2, // has the effect of softening the shadow
+                            spreadRadius: 0, // has the effect of extending the shadow
+                            offset: Offset(
+                              0, // horizontal, move right 10
+                              2, // vertical, move down 10
                             ),
-                          );
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 25,),
+                    InkWell(
+                      child: Container(
+                        height: 40,
+                        width: MediaQuery.of(context).size.width/2,
+                        decoration: new BoxDecoration(
+                          color: Color(_darkBlue),
+                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Retirar recaudación",style: TextStyle(color: Colors.white),
+                          )
+                        ),
+                      ),
+                      onTap: ()async{
+                        final response = await http.get("http://www.cras-dev.com/Interfaz/interfaz.php?auth=4kebq1J2MD&tipo=retiro&correo=${widget.correoUsuario}&serie=${widget.nroSerie}");
+                        if (response.statusCode == 200){
+                          retiro = Retiro.fromJson(json.decode(response.body));
+                          if(retiro.realizado == "1"){
+                            print("Retirado correctamente");
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text(retiro.mensaje),
+                            ));
+                          }else{
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text(retiro.mensaje),
+                            ));
+                          }
                         }else{
-                          return Container(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: charts.BarChart(
-                                snapshot.data,vertical: true,
-                                barRendererDecorator: charts.BarLabelDecorator<String>(
-                                ),
-                                domainAxis: charts.OrdinalAxisSpec(
-                                  renderSpec: charts.NoneRenderSpec()
-                                ),
-                                animate: true,
-                                animationDuration: Duration(seconds: 2),
-                                behaviors: [
-                                  charts.ChartTitle("Temperatura Máxima y Mínima",titleStyleSpec: charts.TextStyleSpec(fontSize: 12,)),
-                                ],
-                              ),
-                            ),
-                          );
-                         }
-                      }
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text("Fallo de conexión"),
+                          ));
+                        }
+                      },
                     ),
-                  decoration: new BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 2, // has the effect of softening the shadow
-                        spreadRadius: 0, // has the effect of extending the shadow
-                        offset: Offset(
-                          0, // horizontal, move right 10
-                          2, // vertical, move down 10
+                  SizedBox(height: 25,),
+                  Container(
+                      height: 100,
+                      child: FutureBuilder(
+                        future: graficaRec(),
+                        builder: (BuildContext context, AsyncSnapshot snapshot){
+                          if(snapshot.data == null){
+                            return Center(
+                              child: CircularProgressIndicator(
+                                backgroundColor: Color(_darkBlue),
+                              ),
+                            );
+                          }else{
+                            return charts.TimeSeriesChart(snapshot.data,animate: true,animationDuration: Duration(seconds: 1));
+                          }
+                        },
+                      ),
+                      decoration: new BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 2, // has the effect of softening the shadow
+                            spreadRadius: 0, // has the effect of extending the shadow
+                            offset: Offset(
+                              0, // horizontal, move right 10
+                              2, // vertical, move down 10
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 25,),
+                    Container(
+                    height: 100,
+                    width:  MediaQuery.of(context).size.width,                   
+                        child: FutureBuilder(
+                          future: getTempActual() ,
+                          builder: (BuildContext context, AsyncSnapshot snapshot){
+                            if(snapshot.data == null){
+                              print(snapshot.data);
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  backgroundColor: Color(_darkBlue),
+                                ),
+                              );
+                            }else{
+                              return Row(
+                                children: <Widget>[
+                                  Container(
+                                    width: MediaQuery.of(context).size.width/1.5,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 25, top: 26),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text("Temperatura actual",style: TextStyle(fontSize: 18),),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.all(2),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.centerLeft,          
+                                            child: Text("$tempActual°C",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
+                                          ),
+                                        ],
+                                      )
+                                    ) 
+                                  ),
+                                  Container(
+                                    child: FutureBuilder(
+                                      future: getTempImagen(),
+                                      builder: (BuildContext context, AsyncSnapshot snapshot){
+                                        if(snapshot.data == null){
+                                          return  Center(
+                                              child:  CircularProgressIndicator(
+                                              backgroundColor: Color(_darkBlue),
+                                            ),
+                                          );
+                                        }else{
+                                          return Image.asset(imagen,
+                                            scale: 7.5,
+                                            alignment: Alignment.centerRight,
+                                          );
+                                        }
+                                      }
+                                    )
+                                  ),
+                                ],
+                              );
+                            }
+                          }
                         ),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 25,),
-              ],
-          ),
-        ),
+                      decoration: new BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 2, // has the effect of softening the shadow
+                            spreadRadius: 0, // has the effect of extending the shadow
+                            offset: Offset(
+                              0, // horizontal, move right 10
+                              2, // vertical, move down 10
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 25,),
+                    Container(
+                    height: 250,
+                    width:  MediaQuery.of(context).size.width,                   
+                        child: FutureBuilder(
+                          future: grafica(),
+                          builder: (BuildContext context, AsyncSnapshot snapshot){
+                            if(snapshot.data == null){
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  backgroundColor: Color(_darkBlue),
+                                ),
+                              );
+                            }else{
+                              return Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: charts.BarChart(
+                                    snapshot.data,vertical: true,
+                                    barRendererDecorator: charts.BarLabelDecorator<String>(
+                                    ),
+                                    domainAxis: charts.OrdinalAxisSpec(
+                                      renderSpec: charts.NoneRenderSpec()
+                                    ),
+                                    animate: true,
+                                    animationDuration: Duration(seconds: 2),
+                                    behaviors: [
+                                      charts.ChartTitle("Temperatura Máxima y Mínima",titleStyleSpec: charts.TextStyleSpec(fontSize: 12,)),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                        ),
+                      decoration: new BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 2, // has the effect of softening the shadow
+                            spreadRadius: 0, // has the effect of extending the shadow
+                            offset: Offset(
+                              0, // horizontal, move right 10
+                              2, // vertical, move down 10
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 25,),
+                  ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
