@@ -6,6 +6,7 @@ import 'package:cras/Modelo/remover_disp.dart';
 import 'package:cras/Modelo/retiro.dart';
 import 'package:cras/Modelo/temp_real.dart';
 import 'package:cras/Pantallas/Mapa.dart';
+import 'package:cras/Pantallas/SubPantallas/ListaMantenimiento.dart' as prefix0;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -16,6 +17,7 @@ import 'AgregarDispensador.dart';
 import 'Resumen.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:async';
+import 'package:intl/intl.dart';
 
 int _darkBlue = 0xFF022859;
 
@@ -51,12 +53,26 @@ var tiempo =1;
 var nombre;
 var estado;
 var imagen;
+var hour;
+var minute;
+var day;
+var month;
+var year;
+var prueba;
+int day2;
+var hora2;
+var horaCel;
+var diaCel;
 List<Rec> recgraf = [];
 class _Dispensadores extends State<PantallaDispensadores>{
   void initState(){
     super.initState();
     nombre = widget.nombreDisp;
     serie = widget.nroSerie;
+    getConexion();
+    horaCel=DateTime.now().hour.toInt();
+    diaCel=DateTime.now().day.toInt();
+    print(getConexion());
   }
   Future getConexion()async{
     var response = await http.get("$_urlConexion&serie=${widget.nroSerie}");
@@ -65,9 +81,14 @@ class _Dispensadores extends State<PantallaDispensadores>{
       if(conexion.realizado == "1"){
         var largocon = conexion.estado.length;
         estado = conexion.estado[largocon-1].estado;
+        hour = int.parse(conexion.estado[largocon-1].hour);
+        ///hour = hour +1;
+        day = int.parse(conexion.estado[largocon-1].day);
+        day2 = day -1;
+        //hora2 = await hour-1;
       }
     }
-    return estado;
+    return [estado,hour,day,day2];
   }
   Future grafica()async{
     var respose = await http.get("$_urlTmpReal&serie=$serie");
@@ -339,7 +360,8 @@ class _Dispensadores extends State<PantallaDispensadores>{
                             ),
                           ),
                         );
-                      }else if(estado == "1"){
+                      }
+                      else if(snapshot.data[0]== "1" && snapshot.data[1] == DateTime.now().hour.toInt() && (snapshot.data[2] == diaCel || snapshot.data[3] == diaCel)){
                         return Container(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -349,7 +371,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
                             ],
                           ),
                         );
-                      }else {
+                      }else{
                         return Container(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -358,7 +380,7 @@ class _Dispensadores extends State<PantallaDispensadores>{
                               Text("Sin Conexión",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.red)),
                             ],
                           ),
-                        );
+                        ); 
                       }
                     },
                   ),
